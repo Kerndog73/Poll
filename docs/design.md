@@ -55,7 +55,7 @@ for things to create.
 ### Configure categorical poll
 
 The poll author writes a question or a title for the poll. The author also adds
-choices to the poll. There must be at least two choices. An choice is described
+choices to the poll. There must be at least two choices. A choice is described
 by a single piece of text. The length of the title and the length of the choices
 may be limited. The number of choices may also be limited. The author must
 decide whether participants will be allowed to choose multiple choices.

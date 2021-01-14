@@ -12,6 +12,7 @@ async fn main() {
         .or(filters::run())
         .or(filters::results())
         .or(filters::respond())
+        .or(filters::favicon())
         .recover(filters::leaked_rejection);
 
     warp::serve(routes.with(warp::log("poll")))
