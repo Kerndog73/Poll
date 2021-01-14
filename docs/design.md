@@ -218,7 +218,7 @@ around with CSS to position text in the right places but should be doable.
 ### Paths
 
  - `/` home page where polls can be created
- - `/configure_<type>` configure some type of poll
+ - `/configure/<type>` configure some type of poll
  - `/run/<unique_id>` run a poll
  - `/results/<unique_id>` results for a poll
  - `/respond/<unique_id>` respond to a poll
