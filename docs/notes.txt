@@ -1,0 +1,8 @@
+Favicon source
+https://favicon.io/emoji-favicons/check-mark-button
+
+Create the postgres database
+/usr/local/opt/postgres/bin/createdb -U postgres -w -O postgres poll
+
+Open database console
+psql -U postgres poll

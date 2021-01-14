@@ -1,6 +1,7 @@
 use log::debug;
 use warp::Filter;
 use crate::handlers;
+use deadpool_postgres::Pool;
 use std::convert::Infallible;
 
 fn with_state<S: Clone + Send>(state: S) -> impl Filter<Extract = (S,), Error = Infallible> + Clone {
@@ -53,10 +54,11 @@ pub fn api_configure_categorical() -> impl Filter<Extract = impl warp::Reply, Er
 }
 */
 
-pub fn api_configure_numerical() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn api_configure_numerical(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("api" / "configure" / "numerical")
         .and(warp::post())
         .and(warp::body::form())
+        .and(with_state(pool))
         .and_then(handlers::config_num)
 }
 

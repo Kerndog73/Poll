@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use deadpool_postgres::Pool;
 
 #[derive(Deserialize, Debug)]
 pub struct ConfigNumRequest {
@@ -8,7 +9,7 @@ pub struct ConfigNumRequest {
     integer: Option<String>,
 }
 
-pub async fn config_num(req: ConfigNumRequest) -> Result<impl warp::Reply, warp::Rejection> {
+pub async fn config_num(req: ConfigNumRequest, pool: Pool) -> Result<impl warp::Reply, warp::Rejection> {
     let title = req.title.unwrap_or_default();
     let minimum = req.minimum.unwrap_or(-f64::INFINITY);
     let maximum = req.maximum.unwrap_or(f64::INFINITY);
