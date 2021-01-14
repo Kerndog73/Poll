@@ -1,5 +1,8 @@
+#[macro_use]
+mod utils;
 mod filters;
 mod handlers;
+mod database;
 
 use warp::Filter;
 use deadpool_postgres::{Pool, Manager};

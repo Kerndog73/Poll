@@ -30,21 +30,21 @@ pub fn run() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection>
     warp::path!("run" / String)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/run.html"))
-        .map(|s,f|f)
+        .map(|_,f|f)
 }
 
 pub fn results() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("results" / String)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/results.html"))
-        .map(|s,f|f)
+        .map(|_,f|f)
 }
 
 pub fn respond() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("respond" / String)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/respond_cat.html"))
-        .map(|s,f|f)
+        .map(|_,f|f)
 }
 
 /*

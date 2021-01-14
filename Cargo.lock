@@ -1110,6 +1110,7 @@ dependencies = [
  "deadpool-postgres",
  "log",
  "pretty_env_logger",
+ "rand 0.7.3",
  "serde",
  "tokio",
  "tokio-postgres",

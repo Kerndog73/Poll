@@ -1,7 +1,8 @@
 use serde::Deserialize;
+use crate::database as db;
 use deadpool_postgres::Pool;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize)]
 pub struct ConfigNumRequest {
     title: Option<String>,
     minimum: Option<f64>,
@@ -9,13 +10,20 @@ pub struct ConfigNumRequest {
     integer: Option<String>,
 }
 
-pub async fn config_num(req: ConfigNumRequest, pool: Pool) -> Result<impl warp::Reply, warp::Rejection> {
-    let title = req.title.unwrap_or_default();
-    let minimum = req.minimum.unwrap_or(-f64::INFINITY);
-    let maximum = req.maximum.unwrap_or(f64::INFINITY);
-    let integer = req.integer.is_some();
-    println!("Title: {}", title);
-    println!("Range: {} to {}", minimum, maximum);
-    println!("Integers only? {}", integer);
-    Ok(warp::redirect(warp::http::Uri::from_static("/run/id")))
+pub async fn config_num(req: ConfigNumRequest, pool: Pool) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
+    let config = db::PollNum {
+        title: req.title.unwrap_or_default(),
+        minimum: req.minimum.unwrap_or(-f64::INFINITY),
+        maximum: req.maximum.unwrap_or(f64::INFINITY),
+        integer: req.integer.is_some(),
+    };
+    if !db::valid_poll_num(&config) {
+        return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST));
+    }
+    let poll_id = try_500!(db::create_poll_num(pool, config).await);
+    Ok(Box::new(warp::redirect(
+        warp::http::Uri::from_maybe_shared(
+            format!("/run/{}", poll_id)
+        ).unwrap()
+    )))
 }

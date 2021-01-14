@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS poll_numerical (
     title VARCHAR(128) NOT NULL,
     minimum DOUBLE PRECISION NOT NULL,
     maximum DOUBLE PRECISION NOT NULL,
-    only_integer BOOLEAN NOT NULL,
+    only_integers BOOLEAN NOT NULL,
 
     PRIMARY KEY (poll_id)
 );

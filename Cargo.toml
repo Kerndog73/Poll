@@ -19,6 +19,7 @@ askama_warp = "0.10"
 tokio-postgres = { version = "0.5", features = ["with-chrono-0_4"] }
 deadpool-postgres = { version = "0.5" }
 serde = { version = "1.0", features = ["derive"] }
+rand = "0.7"
 
 [profile.release]
 lto = true
