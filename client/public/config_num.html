@@ -8,20 +8,36 @@
     <title>Quick Poll - Configure</title>
 </head>
 <body>
-    <label>
-        Title:
-        <input type="text"/>
-    </label>
-    <label>
-        Minimum:
-        <input type="number"/>
-        <input type="checkbox"/>
-    </label>
-    <label>
-        Maximum:
-        <input type="number"/>
-        <input type="checkbox"/>
-    </label>
-    <input type="button" value="Create"/>
+    <div class="form-container">
+        <form class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" id="title" type="text" placeholder="What is your favourite number?"/>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-6">
+                    <label class="form-label" for="minimum">Minimum</label>
+                    <input class="form-control" id="minimum" type="number" step="any" placeholder="Negative infinity"/>
+                </div>
+
+                <div class="form-group col-6">
+                    <label class="form-label" for="maximum">Maximum</label>
+                    <input class="form-control" id="maximum" type="number" step="any" placeholder="Positive infinity"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="integer"/>
+                    <label class="form-check-label" for="integer">Only allow integers</label>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <input class="btn btn-primary" type="submit" value="Create"/>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

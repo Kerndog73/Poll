@@ -1,6 +1,8 @@
 const path = require("path");
+const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const PurgecssPlugin = require("purgecss-webpack-plugin")
 
 module.exports = {
     entry: {
@@ -22,6 +24,9 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: "css/[name].css"
         }),
+        new PurgecssPlugin({
+            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`,  { nodir: true }),
+        }),
         new HtmlWebpackPlugin({
             filename: "home.html",
             template: "./public/home.html",
@@ -30,33 +35,32 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: "config_cat.html",
             template: "./public/config_cat.html",
-            chunks: ["common"]
+            chunks: ["common", "config_cat"]
         }),
         new HtmlWebpackPlugin({
             filename: "config_num.html",
             template: "./public/config_num.html",
-            chunks: ["common"],
-            base: "/"
+            chunks: ["common", "config_num"],
         }),
         new HtmlWebpackPlugin({
             filename: "run.html",
             template: "./public/run.html",
-            chunks: ["common"]
+            chunks: ["common", "run"]
         }),
         new HtmlWebpackPlugin({
             filename: "results.html",
             template: "./public/results.html",
-            chunks: ["common"]
+            chunks: ["common", "results"]
         }),
         new HtmlWebpackPlugin({
             filename: "respond_cat.html",
             template: "./public/respond_cat.html",
-            chunks: ["common"]
+            chunks: ["common", "respond_cat"]
         }),
         new HtmlWebpackPlugin({
             filename: "respond_num.html",
             template: "./public/respond_num.html",
-            chunks: ["common"]
+            chunks: ["common", "respond_num"]
         }),
     ],
     module: {
