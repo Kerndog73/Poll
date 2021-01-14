@@ -1,5 +1,6 @@
 use log::debug;
 use warp::Filter;
+use crate::handlers;
 use std::convert::Infallible;
 
 fn with_state<S: Clone + Send>(state: S) -> impl Filter<Extract = (S,), Error = Infallible> + Clone {
@@ -43,6 +44,20 @@ pub fn respond() -> impl Filter<Extract = impl warp::Reply, Error = warp::Reject
         .and(warp::get())
         .and(warp::fs::file("./client/dist/respond_cat.html"))
         .map(|s,f|f)
+}
+
+/*
+pub fn api_configure_categorical() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("api" / "configure" / "categorical")
+        .and(warp::post())
+}
+*/
+
+pub fn api_configure_numerical() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("api" / "configure" / "numerical")
+        .and(warp::post())
+        .and(warp::body::form())
+        .and_then(handlers::config_num)
 }
 
 pub fn favicon() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {

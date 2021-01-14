@@ -873,6 +873,7 @@ dependencies = [
  "askama_warp",
  "log",
  "pretty_env_logger",
+ "serde",
  "tokio",
  "warp",
 ]

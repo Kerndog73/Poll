@@ -1,4 +1,5 @@
 mod filters;
+mod handlers;
 
 use warp::Filter;
 
@@ -12,6 +13,8 @@ async fn main() {
         .or(filters::run())
         .or(filters::results())
         .or(filters::respond())
+        //.or(filters::api_configure_categorical)
+        .or(filters::api_configure_numerical())
         .or(filters::favicon())
         .or(filters::js())
         .or(filters::css())
