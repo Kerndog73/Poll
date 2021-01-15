@@ -11,12 +11,16 @@ pub struct PollNum {
     pub integer: bool,
 }
 
+fn is_integer(n: f64) -> bool {
+    (n as i64) as f64 == n
+}
+
 pub fn valid_poll_num(config: &PollNum) -> bool {
-    if config.title.len() > 128 { return false; }
+    if config.title.len() == 0 || config.title.len() > 128 { return false; }
     if config.minimum >= config.maximum { return false; }
     if config.integer {
-        if (config.minimum as i64) as f64 != config.minimum { return false; }
-        if (config.maximum as i64) as f64 != config.maximum { return false; }
+        if config.minimum == -f64::INFINITY || is_integer(config.minimum) { return false; }
+        if config.maximum == f64::INFINITY || is_integer(config.maximum) { return false; }
     }
     true
 }

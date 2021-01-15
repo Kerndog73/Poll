@@ -4,7 +4,7 @@ use deadpool_postgres::Pool;
 
 #[derive(Deserialize)]
 pub struct ConfigNumRequest {
-    title: Option<String>,
+    title: String,
     minimum: Option<f64>,
     maximum: Option<f64>,
     integer: Option<String>,
@@ -12,7 +12,7 @@ pub struct ConfigNumRequest {
 
 pub async fn config_num(req: ConfigNumRequest, pool: Pool) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
     let config = db::PollNum {
-        title: req.title.unwrap_or_default(),
+        title: req.title,
         minimum: req.minimum.unwrap_or(-f64::INFINITY),
         maximum: req.maximum.unwrap_or(f64::INFINITY),
         integer: req.integer.is_some(),
