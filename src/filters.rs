@@ -40,11 +40,11 @@ pub fn results() -> impl Filter<Extract = impl warp::Reply, Error = warp::Reject
         .map(|_,f|f)
 }
 
-pub fn respond() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn respond(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("respond" / String)
         .and(warp::get())
-        .and(warp::fs::file("./client/dist/respond_cat.html"))
-        .map(|_,f|f)
+        .and(with_state(pool))
+        .and_then(handlers::respond)
 }
 
 /*

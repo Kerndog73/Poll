@@ -8,11 +8,52 @@
     <title>Quick Poll - Respond</title>
 </head>
 <body>
-    <h1>Title</h1>
-    <label>
-        Response:
-        <input type="number"/>
-    </label>
-    <input type="button" value="Submit"/>
+    <div class="form-container">
+        <form class="form-row" action="/api/respond/{{endpoint|safe}}" method="post">
+            <div class="form-group">
+                <h2><label class="form-label" for="box">{{title}}</label></h2>
+                <div class="input-group">
+                    {% if 0.0 > minimum %}
+                    <div class="input-group-prepend">
+                        <input type="button" id="negate" class="btn btn-primary" value="-"/>
+                    </div>
+                    {% endif %}
+                    <input
+                            class="form-control" id="box" name="response" type="number" pattern="[0-9]*"
+                            {% if integer %}
+                            inputmode="numeric" step="1"
+                            {% else %}
+                            inputmode="decimal" step="any"
+                            {% endif %}
+                            {% if minimum != -f64::INFINITY %}
+                            min="{{minimum|safe}}"
+                            {% endif %}
+                            {% if maximum != f64::INFINITY %}
+                            max="{{maximum|safe}}"
+                            {% endif %}
+                    />
+                </div>
+            </div>
+
+            {% if minimum != -f64::INFINITY && maximum != f64::INFINITY %}
+            <div class="form-group">
+                <input
+                        class="form-control-range" id="slider" type="range"
+                        {% if integer %}
+                        step="1"
+                        {% else %}
+                        step="any"
+                        {% endif %}
+                        min="{{minimum|safe}}"
+                        max="{{maximum|safe}}"
+                />
+            </div>
+            {% endif %}
+
+            <div>
+                <input class="btn btn-primary" type="submit" value="Submit"/>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

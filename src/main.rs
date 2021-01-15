@@ -36,7 +36,7 @@ async fn main() {
         .or(filters::configure_numerical())
         .or(filters::run())
         .or(filters::results())
-        .or(filters::respond())
+        .or(filters::respond(pool.clone()))
         //.or(filters::api_configure_categorical)
         .or(filters::api_configure_numerical(pool))
         .or(filters::favicon())

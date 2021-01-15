@@ -1,8 +1,12 @@
 use crate::utils;
 use deadpool_postgres::{Pool, PoolError};
 
-const POLL_ID_LENGTH: usize = 8;
+pub const POLL_ID_LENGTH: usize = 8;
 pub type PollID = String;
+
+macro_rules! poll_duration {
+    () => { "INTERVAL '1 day'" }
+}
 
 pub struct PollNum {
     pub title: String,
@@ -43,4 +47,32 @@ pub async fn create_poll_num(pool: Pool, config: PollNum) -> Result<PollID, Pool
     }
 
     Ok(poll_id)
+}
+
+pub async fn get_poll_num(pool: Pool, poll_id: PollID) -> Result<Option<PollNum>, PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare(concat!("
+        SELECT title, minimum, maximum, only_integers
+        FROM poll_numerical
+        WHERE poll_id = $1
+        AND creation_time > NOW() - ", poll_duration!())
+    ).await?;
+    Ok(conn.query_opt(&stmt, &[&poll_id]).await?.map(|row| PollNum {
+        title: row.get(0),
+        minimum: row.get(1),
+        maximum: row.get(2),
+        integer: row.get(3),
+    }))
+}
+
+pub struct ResponseNum(f64);
+
+pub async fn respond_poll_num(pool: Pool, poll_id: PollID, res: ResponseNum) -> Result<(), PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        INSERT INTO poll_numerical_response (poll_id, value)
+        VALUES ($1, $2)
+    ").await?;
+    conn.execute(&stmt, &[&poll_id, &res.0]).await?;
+    Ok(())
 }
