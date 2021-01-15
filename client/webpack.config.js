@@ -14,6 +14,7 @@ module.exports = {
         results: "./src/pages/results/index.js",
         respond_cat: "./src/pages/respond_cat/index.js",
         respond_num: "./src/pages/respond_num/index.js",
+        success: "./src/pages/success/index.js",
     },
     output: {
         filename: "js/[name].js",
@@ -25,7 +26,7 @@ module.exports = {
             filename: "css/[name].css"
         }),
         new PurgecssPlugin({
-            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`,  { nodir: true }),
+            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`, { nodir: true }),
         }),
         new HtmlWebpackPlugin({
             filename: "home.html",
@@ -61,6 +62,11 @@ module.exports = {
             filename: "respond_num.html",
             template: "./public/respond_num.html",
             chunks: ["common", "respond_num"]
+        }),
+        new HtmlWebpackPlugin({
+            filename: "success.html",
+            template: "./public/success.html",
+            chunks: ["common"]
         }),
     ],
     module: {

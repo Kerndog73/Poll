@@ -23,5 +23,7 @@ pub async fn post_respond_num(poll_id: db::PollID, req: RespondNumRequest, pool:
 
     try_500!(db::respond_poll_num(pool, poll_id, response).await);
 
-    Ok(Box::new(warp::http::StatusCode::NO_CONTENT))
+    Ok(Box::new(warp::reply::html(
+        tokio::fs::read_to_string("./client/dist/success.html").await.unwrap()
+    )))
 }
