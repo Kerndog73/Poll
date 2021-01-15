@@ -1,5 +1,3 @@
-import "../../scss/config_num.scss";
-
 const minimum = document.getElementById("minimum");
 const maximum = document.getElementById("maximum");
 const integer = document.getElementById("integer");

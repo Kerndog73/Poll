@@ -1,5 +1,3 @@
-import "../../scss/config_num.scss";
-
 const negate = document.getElementById("negate");
 const box = document.getElementById("box");
 const slider = document.getElementById("slider");
