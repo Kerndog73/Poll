@@ -64,6 +64,13 @@ pub fn post_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, E
         .and_then(handlers::post_respond_num)
 }
 
+pub fn get_csv_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("csv" / "n" / PollID)
+        .and(warp::get())
+        .and(with_state(pool))
+        .and_then(handlers::get_csv_num)
+}
+
 pub fn favicon() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("favicon.ico")
         .and(warp::get())

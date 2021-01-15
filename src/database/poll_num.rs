@@ -85,3 +85,19 @@ pub async fn respond_poll_num(pool: Pool, poll_id: PollID, res: ResponseNum) -> 
     conn.execute(&stmt, &[&poll_id, &res.0]).await?;
     Ok(())
 }
+
+pub async fn get_poll_results_num(pool: Pool, poll_id: &PollID) -> Result<Vec<f64>, PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        SELECT value
+        FROM poll_numerical_response
+        WHERE poll_id = $1
+        ORDER BY value
+    ").await?;
+    Ok(conn.query(&stmt, &[&poll_id])
+        .await?
+        .iter()
+        .map(|row| row.get(0))
+        .collect()
+    )
+}
