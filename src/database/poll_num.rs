@@ -19,13 +19,23 @@ fn is_integer(n: f64) -> bool {
     (n as i64) as f64 == n
 }
 
-pub fn valid_poll_num(config: &PollNum) -> bool {
-    if config.title.len() == 0 || config.title.len() > 128 { return false; }
-    if config.minimum >= config.maximum { return false; }
-    if config.integer {
-        if config.minimum == -f64::INFINITY || is_integer(config.minimum) { return false; }
-        if config.maximum == f64::INFINITY || is_integer(config.maximum) { return false; }
+pub fn valid_poll_num(poll: &PollNum) -> bool {
+    if poll.title.len() == 0 || poll.title.len() > 128 { return false; }
+    if poll.minimum >= poll.maximum { return false; }
+    if poll.integer {
+        if poll.minimum == -f64::INFINITY || is_integer(poll.minimum) { return false; }
+        if poll.maximum == f64::INFINITY || is_integer(poll.maximum) { return false; }
     }
+    true
+}
+
+#[derive(Clone, Copy)]
+pub struct ResponseNum(pub f64);
+
+pub fn valid_response_num(poll: &PollNum, response: ResponseNum) -> bool {
+    if response.0 < poll.minimum { return false; }
+    if response.0 > poll.maximum { return false; }
+    if poll.integer && !is_integer(response.0) { return false; }
     true
 }
 
@@ -33,7 +43,7 @@ fn generate_poll_id_num() -> PollID {
     format!("n{}", utils::generate_random_base64url(POLL_ID_LENGTH - 1))
 }
 
-pub async fn create_poll_num(pool: Pool, config: PollNum) -> Result<PollID, PoolError> {
+pub async fn create_poll_num(pool: Pool, poll: PollNum) -> Result<PollID, PoolError> {
     let conn = pool.get().await?;
     let stmt = conn.prepare("
         INSERT INTO poll_numerical (poll_id, creation_time, title, minimum, maximum, only_integers)
@@ -42,14 +52,14 @@ pub async fn create_poll_num(pool: Pool, config: PollNum) -> Result<PollID, Pool
     ").await?;
 
     let mut poll_id = generate_poll_id_num();
-    while conn.execute(&stmt, &[&poll_id, &config.title, &config.minimum, &config.maximum, &config.integer]).await? == 0 {
+    while conn.execute(&stmt, &[&poll_id, &poll.title, &poll.minimum, &poll.maximum, &poll.integer]).await? == 0 {
         poll_id = generate_poll_id_num();
     }
 
     Ok(poll_id)
 }
 
-pub async fn get_poll_num(pool: Pool, poll_id: PollID) -> Result<Option<PollNum>, PoolError> {
+pub async fn get_poll_num(pool: Pool, poll_id: &PollID) -> Result<Option<PollNum>, PoolError> {
     let conn = pool.get().await?;
     let stmt = conn.prepare(concat!("
         SELECT title, minimum, maximum, only_integers
@@ -64,8 +74,6 @@ pub async fn get_poll_num(pool: Pool, poll_id: PollID) -> Result<Option<PollNum>
         integer: row.get(3),
     }))
 }
-
-pub struct ResponseNum(f64);
 
 pub async fn respond_poll_num(pool: Pool, poll_id: PollID, res: ResponseNum) -> Result<(), PoolError> {
     let conn = pool.get().await?;

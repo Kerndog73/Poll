@@ -1,6 +1,7 @@
 use log::debug;
 use warp::Filter;
 use crate::handlers;
+use crate::database::PollID;
 use deadpool_postgres::Pool;
 use std::convert::Infallible;
 
@@ -27,21 +28,21 @@ pub fn configure_numerical() -> impl Filter<Extract = impl warp::Reply, Error = 
 }
 
 pub fn run() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("run" / String)
+    warp::path!("run" / PollID)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/run.html"))
         .map(|_,f|f)
 }
 
 pub fn results() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("results" / String)
+    warp::path!("results" / PollID)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/results.html"))
         .map(|_,f|f)
 }
 
 pub fn respond(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("respond" / String)
+    warp::path!("respond" / PollID)
         .and(warp::get())
         .and(with_state(pool))
         .and_then(handlers::respond)
@@ -60,6 +61,14 @@ pub fn api_configure_numerical(pool: Pool) -> impl Filter<Extract = impl warp::R
         .and(warp::body::form())
         .and(with_state(pool))
         .and_then(handlers::config_num)
+}
+
+pub fn api_respond_numerical(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("api" / "respond" / "numerical" / PollID)
+        .and(warp::post())
+        .and(warp::body::form())
+        .and(with_state(pool))
+        .and_then(handlers::api_respond_num)
 }
 
 pub fn favicon() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
