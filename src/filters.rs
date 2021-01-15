@@ -15,60 +15,53 @@ pub fn root() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection
         .and(warp::fs::file("./client/dist/home.html"))
 }
 
-pub fn configure_categorical() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("configure" / "categorical")
+pub fn get_configure_cat() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("configure" / "c")
         .and(warp::get())
         .and(warp::fs::file("./client/dist/config_cat.html"))
 }
 
-pub fn configure_numerical() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("configure" / "numerical")
+pub fn get_configure_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("configure" / "n")
         .and(warp::get())
         .and(warp::fs::file("./client/dist/config_num.html"))
 }
 
-pub fn run() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("run" / PollID)
+pub fn run_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("run" / "n" / PollID)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/run.html"))
         .map(|_,f|f)
 }
 
-pub fn results() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("results" / PollID)
+pub fn results_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("results" / "n" / PollID)
         .and(warp::get())
         .and(warp::fs::file("./client/dist/results.html"))
         .map(|_,f|f)
 }
 
-pub fn respond(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("respond" / PollID)
+pub fn get_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("respond" / "n" / PollID)
         .and(warp::get())
         .and(with_state(pool))
-        .and_then(handlers::respond)
+        .and_then(handlers::get_respond_num)
 }
 
-/*
-pub fn api_configure_categorical() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("api" / "configure" / "categorical")
-        .and(warp::post())
-}
-*/
-
-pub fn api_configure_numerical(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("api" / "configure" / "numerical")
+pub fn post_configure_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("configure" / "n")
         .and(warp::post())
         .and(warp::body::form())
         .and(with_state(pool))
-        .and_then(handlers::config_num)
+        .and_then(handlers::post_configure_num)
 }
 
-pub fn api_respond_numerical(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("api" / "respond" / "numerical" / PollID)
+pub fn post_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("respond" / "n" / PollID)
         .and(warp::post())
         .and(warp::body::form())
         .and(with_state(pool))
-        .and_then(handlers::api_respond_num)
+        .and_then(handlers::post_respond_num)
 }
 
 pub fn favicon() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
@@ -91,5 +84,5 @@ pub fn css() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection>
 
 pub async fn leaked_rejection(rejection: warp::Rejection) -> Result<warp::http::StatusCode, warp::Rejection> {
     debug!("{:?}", rejection);
-    Err(rejection)
+    Ok(warp::http::StatusCode::INTERNAL_SERVER_ERROR)
 }

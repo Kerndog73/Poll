@@ -1,7 +1,7 @@
-mod config_num;
-mod respond;
-mod api_respond;
+mod post_configure;
+mod get_respond;
+mod post_respond;
 
-pub use config_num::*;
-pub use respond::*;
-pub use api_respond::*;
+pub use post_configure::*;
+pub use get_respond::*;
+pub use post_respond::*;

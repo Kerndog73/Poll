@@ -7,7 +7,7 @@ pub struct RespondNumRequest {
     response: f64,
 }
 
-pub async fn api_respond_num(poll_id: db::PollID, req: RespondNumRequest, pool: Pool)
+pub async fn post_respond_num(poll_id: db::PollID, req: RespondNumRequest, pool: Pool)
     -> Result<Box<dyn warp::Reply>, warp::Rejection>
 {
     let poll = match try_500!(db::get_poll_num(pool.clone(), &poll_id).await) {

@@ -39,10 +39,6 @@ pub fn valid_response_num(poll: &PollNum, response: ResponseNum) -> bool {
     true
 }
 
-fn generate_poll_id_num() -> PollID {
-    format!("n{}", utils::generate_random_base64url(POLL_ID_LENGTH - 1))
-}
-
 pub async fn create_poll_num(pool: Pool, poll: PollNum) -> Result<PollID, PoolError> {
     let conn = pool.get().await?;
     let stmt = conn.prepare("
@@ -51,15 +47,19 @@ pub async fn create_poll_num(pool: Pool, poll: PollNum) -> Result<PollID, PoolEr
         ON CONFLICT (poll_id) DO NOTHING
     ").await?;
 
-    let mut poll_id = generate_poll_id_num();
+    let mut poll_id = utils::generate_random_base64url(POLL_ID_LENGTH);
     while conn.execute(&stmt, &[&poll_id, &poll.title, &poll.minimum, &poll.maximum, &poll.integer]).await? == 0 {
-        poll_id = generate_poll_id_num();
+        poll_id = utils::generate_random_base64url(POLL_ID_LENGTH);
     }
 
     Ok(poll_id)
 }
 
 pub async fn get_poll_num(pool: Pool, poll_id: &PollID) -> Result<Option<PollNum>, PoolError> {
+    if poll_id.len() != POLL_ID_LENGTH {
+        return Ok(None);
+    }
+
     let conn = pool.get().await?;
     let stmt = conn.prepare(concat!("
         SELECT title, minimum, maximum, only_integers
@@ -67,6 +67,7 @@ pub async fn get_poll_num(pool: Pool, poll_id: &PollID) -> Result<Option<PollNum
         WHERE poll_id = $1
         AND creation_time > NOW() - ", poll_duration!())
     ).await?;
+
     Ok(conn.query_opt(&stmt, &[&poll_id]).await?.map(|row| PollNum {
         title: row.get(0),
         minimum: row.get(1),
