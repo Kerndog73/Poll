@@ -17,6 +17,7 @@ fn main() {
     println!("cargo:rerun-if-changed=client/src/pages/results/index.js");
     println!("cargo:rerun-if-changed=client/src/pages/run/index.js");
 
+    println!("cargo:rerun-if-changed=client/src/scss/common.scss");
     println!("cargo:rerun-if-changed=client/src/scss/custom.scss");
 
     println!("cargo:rerun-if-changed=client/webpack.config.js");

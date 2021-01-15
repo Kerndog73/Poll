@@ -1,11 +1,26 @@
 use serde::Deserialize;
 use crate::database as db;
 use deadpool_postgres::Pool;
+use serde::de::IntoDeserializer;
+
+// https://github.com/serde-rs/serde/issues/1425#issuecomment-462282398
+fn empty_string_as_none<'de, D, T>(de: D) -> Result<Option<T>, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+        T: serde::Deserialize<'de>,
+{
+    match String::deserialize(de)?.as_str() {
+        "" => Ok(None),
+        s => T::deserialize(s.into_deserializer()).map(Some)
+    }
+}
 
 #[derive(Deserialize)]
 pub struct ConfigureNumRequest {
     title: String,
+    #[serde(deserialize_with = "empty_string_as_none")]
     minimum: Option<f64>,
+    #[serde(deserialize_with = "empty_string_as_none")]
     maximum: Option<f64>,
     integer: Option<String>,
 }
