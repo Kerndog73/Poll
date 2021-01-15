@@ -7,6 +7,7 @@ fn main() {
     println!("cargo:rerun-if-changed=client/public/respond_num.html");
     println!("cargo:rerun-if-changed=client/public/results.html");
     println!("cargo:rerun-if-changed=client/public/run.html");
+    println!("cargo:rerun-if-changed=client/public/success.html");
 
     println!("cargo:rerun-if-changed=client/src/pages/common/index.js");
     println!("cargo:rerun-if-changed=client/src/pages/config_cat/index.js");
@@ -16,6 +17,7 @@ fn main() {
     println!("cargo:rerun-if-changed=client/src/pages/respond_num/index.js");
     println!("cargo:rerun-if-changed=client/src/pages/results/index.js");
     println!("cargo:rerun-if-changed=client/src/pages/run/index.js");
+    println!("cargo:rerun-if-changed=client/src/pages/success/index.js");
 
     println!("cargo:rerun-if-changed=client/src/scss/common.scss");
     println!("cargo:rerun-if-changed=client/src/scss/custom.scss");
