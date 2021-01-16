@@ -59,6 +59,7 @@ pub fn post_configure_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply,
 pub fn post_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("respond" / "n" / PollID)
         .and(warp::post())
+        .and(warp::cookie::optional("completed"))
         .and(warp::body::form())
         .and(with_state(pool))
         .and_then(handlers::post_respond_num)

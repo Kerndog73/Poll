@@ -14,7 +14,7 @@ module.exports = {
         results: "./src/pages/results/index.js",
         respond_cat: "./src/pages/respond_cat/index.js",
         respond_num: "./src/pages/respond_num/index.js",
-        success: "./src/pages/success/index.js",
+        status: "./src/pages/status/index.js",
     },
     output: {
         filename: "js/[name].js",
@@ -64,8 +64,8 @@ module.exports = {
             chunks: ["common", "respond_num"]
         }),
         new HtmlWebpackPlugin({
-            filename: "success.html",
-            template: "./public/success.html",
+            filename: "status.html",
+            template: "./public/status.html",
             chunks: ["common"]
         }),
     ],

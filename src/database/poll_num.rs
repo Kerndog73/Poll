@@ -68,7 +68,7 @@ pub async fn get_poll_num(pool: Pool, poll_id: &PollID) -> Result<Option<PollNum
         AND creation_time > NOW() - ", poll_duration!())
     ).await?;
 
-    Ok(conn.query_opt(&stmt, &[&poll_id]).await?.map(|row| PollNum {
+    Ok(conn.query_opt(&stmt, &[poll_id]).await?.map(|row| PollNum {
         title: row.get(0),
         minimum: row.get(1),
         maximum: row.get(2),
@@ -76,13 +76,13 @@ pub async fn get_poll_num(pool: Pool, poll_id: &PollID) -> Result<Option<PollNum
     }))
 }
 
-pub async fn respond_poll_num(pool: Pool, poll_id: PollID, res: ResponseNum) -> Result<(), PoolError> {
+pub async fn respond_poll_num(pool: Pool, poll_id: &PollID, res: ResponseNum) -> Result<(), PoolError> {
     let conn = pool.get().await?;
     let stmt = conn.prepare("
         INSERT INTO poll_numerical_response (poll_id, value)
         VALUES ($1, $2)
     ").await?;
-    conn.execute(&stmt, &[&poll_id, &res.0]).await?;
+    conn.execute(&stmt, &[poll_id, &res.0]).await?;
     Ok(())
 }
 
@@ -94,7 +94,7 @@ pub async fn get_poll_results_num(pool: Pool, poll_id: &PollID) -> Result<Vec<f6
         WHERE poll_id = $1
         ORDER BY value
     ").await?;
-    Ok(conn.query(&stmt, &[&poll_id])
+    Ok(conn.query(&stmt, &[poll_id])
         .await?
         .iter()
         .map(|row| row.get(0))
