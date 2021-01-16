@@ -12,18 +12,54 @@
         <form class="form-row" action="/configure/n" method="post">
             <div class="form-group">
                 <label class="form-label" for="title">Title</label>
-                <input class="form-control" id="title" name="title" type="text" maxlength="128" required placeholder="What is your favourite number?"/>
+                <input
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        type="text"
+                        maxlength="128"
+                        required
+                        placeholder="What is your favourite number?"
+                />
             </div>
 
             <div class="form-row">
                 <div class="form-group col-6">
                     <label class="form-label" for="minimum">Minimum</label>
-                    <input class="form-control" id="minimum" name="minimum" type="number" step="any" placeholder="Negative infinity"/>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <input type="button" id="negate-minimum" class="btn btn-primary" value="-"/>
+                        </div>
+                        <input
+                                class="form-control"
+                                id="minimum"
+                                name="minimum"
+                                type="number"
+                                step="any"
+                                pattern="[0-9]*"
+                                inputmode="decimal"
+                                placeholder="-infinity"
+                        />
+                    </div>
                 </div>
 
                 <div class="form-group col-6">
                     <label class="form-label" for="maximum">Maximum</label>
-                    <input class="form-control" id="maximum" name="maximum" type="number" step="any" placeholder="Positive infinity"/>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <input type="button" id="negate-maximum" class="btn btn-primary" value="-"/>
+                        </div>
+                        <input
+                                class="form-control"
+                                id="maximum"
+                                name="maximum"
+                                type="number"
+                                step="any"
+                                pattern="[0-9]*"
+                                inputmode="decimal"
+                                placeholder="+infinity"
+                        />
+                    </div>
                 </div>
             </div>
 

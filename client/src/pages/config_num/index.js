@@ -1,6 +1,8 @@
 const minimum = document.getElementById("minimum");
 const maximum = document.getElementById("maximum");
 const integer = document.getElementById("integer");
+const negateMinimum = document.getElementById("negate-minimum");
+const negateMaximum = document.getElementById("negate-maximum");
 
 function parse(element, def) {
     if (element.value === "") {
@@ -29,9 +31,13 @@ function adjustStep() {
     if (integer.checked) {
         minimum.step = "1";
         maximum.step = "1";
+        minimum.inputMode = "numeric";
+        maximum.inputMode = "numeric";
     } else {
         minimum.step = "any";
         maximum.step = "any";
+        minimum.inputMode = "decimal";
+        maximum.inputMode = "decimal";
     }
 }
 
@@ -39,3 +45,13 @@ minimum.addEventListener("input", validate);
 maximum.addEventListener("input", validate);
 integer.addEventListener("input", validate);
 integer.addEventListener("input", adjustStep);
+
+negateMinimum.addEventListener("click", () => {
+    minimum.value = -minimum.value;
+    validate();
+});
+
+negateMaximum.addEventListener("click", () => {
+    maximum.value = -maximum.value;
+    validate();
+});
