@@ -65,8 +65,8 @@ pub async fn get_poll_num(pool: Pool, poll_id: &PollID) -> Result<Option<PollNum
         SELECT title, minimum, maximum, only_integers
         FROM poll_numerical
         WHERE poll_id = $1
-        AND creation_time > NOW() - ", poll_duration!())
-    ).await?;
+        AND creation_time > NOW() - ", poll_duration!()
+    )).await?;
 
     Ok(conn.query_opt(&stmt, &[poll_id]).await?.map(|row| PollNum {
         title: row.get(0),
@@ -100,4 +100,15 @@ pub async fn get_poll_results_num(pool: Pool, poll_id: &PollID) -> Result<Vec<f6
         .map(|row| row.get(0))
         .collect()
     )
+}
+
+pub async fn valid_poll_id_num(pool: Pool, poll_id: &PollID) -> Result<bool, PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare(concat!("
+        SELECT 1
+        FROM poll_numerical
+        WHERE poll_id = $1
+        AND creation_time > NOW() - ", poll_duration!()
+    )).await?;
+    Ok(conn.query_opt(&stmt, &[poll_id]).await?.is_some())
 }

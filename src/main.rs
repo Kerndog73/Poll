@@ -28,6 +28,7 @@ async fn init_database(pool: Pool) {
 async fn main() {
     let pool = create_pool();
     init_database(pool.clone()).await;
+    let ctx = handlers::EventContext::default();
 
     pretty_env_logger::init();
 
@@ -40,6 +41,7 @@ async fn main() {
         .or(filters::post_configure_num(pool.clone()))
         .or(filters::post_respond_num(pool.clone()))
         .or(filters::get_csv_num(pool.clone()))
+        .or(filters::events_num(pool.clone(), ctx))
         .or(filters::favicon())
         .or(filters::js())
         .or(filters::css())

@@ -1,15 +1,16 @@
 @import "./custom";
 
 html, body {
-  height: 100vh;
+  height: 100%;
 }
 
 form {
   background-color: $gray-400;
-  padding: 1.25rem;
-  border-radius: 0.25rem;
+  padding: $card-spacer-x;
+  border-radius: $border-radius;
   display: flex;
   flex-direction: column;
+  flex-wrap: nowrap !important;
 }
 
 .form-container {
@@ -35,7 +36,7 @@ form {
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 1.25rem;
+  padding: $card-spacer-x;
 }
 
 .qr-code {
@@ -59,7 +60,7 @@ form {
   word-break: break-all;
 }
 
-.run-progress {
+#run-progress {
   @extend .light-text;
-  margin: 0.5rem 0;
+  margin: $headings-margin-bottom 0;
 }

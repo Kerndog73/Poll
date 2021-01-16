@@ -1143,6 +1143,7 @@ dependencies = [
  "askama_warp",
  "csv",
  "deadpool-postgres",
+ "futures",
  "log",
  "pretty_env_logger",
  "rand 0.7.3",

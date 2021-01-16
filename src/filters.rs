@@ -72,6 +72,14 @@ pub fn get_csv_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error 
         .and_then(handlers::get_csv_num)
 }
 
+pub fn events_num(pool: Pool, ctx: handlers::EventContext) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("events" / "n" / PollID)
+        .and(warp::get())
+        .and(with_state(pool))
+        .and(with_state(ctx))
+        .and_then(handlers::events_num)
+}
+
 pub fn favicon() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("favicon.ico")
         .and(warp::get())

@@ -11,10 +11,14 @@
     <div class="full-container">
         <h1 class="run-title">{{title}}</h1>
         <h2 class="run-link">http://indi-mac.local/respond/{{kind}}/{{poll_id}}</h2>
-        <!-- 60 = 29 * 2 + 2 -->
+        <!--
+        http://goqr.me/api/doc/create-qr-code/
+        60 = 29 * 2 + 2
+        -->
         <img class="qr-code" width="60" height="60" src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=http%3A%2F%2Findi-mac.local%2Frespond%2F{{kind}}%2F{{poll_id}}" alt="QR Code"/>
-        <span class="run-progress">Submitted: x, in-progress: y</span>
+        <span id="run-progress">Submitted: 0, in-progress: 0</span>
         <input type="button" class="btn btn-primary" value="Close Poll and View Results"/>
     </div>
+    <script>const EVENT_URL="/events/{{kind}}/{{poll_id}}"</script>
 </body>
 </html>
