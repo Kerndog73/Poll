@@ -34,7 +34,7 @@ async fn main() {
     let routes = filters::root()
         .or(filters::get_configure_cat())
         .or(filters::get_configure_num())
-        .or(filters::run_num())
+        .or(filters::get_run_num(pool.clone()))
         .or(filters::results_num())
         .or(filters::get_respond_num(pool.clone()))
         .or(filters::post_configure_num(pool.clone()))

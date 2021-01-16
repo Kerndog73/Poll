@@ -27,11 +27,11 @@ pub fn get_configure_num() -> impl Filter<Extract = impl warp::Reply, Error = wa
         .and(warp::fs::file("./client/dist/config_num.html"))
 }
 
-pub fn run_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+pub fn get_run_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("run" / "n" / PollID)
         .and(warp::get())
-        .and(warp::fs::file("./client/dist/run.html"))
-        .map(|_,f|f)
+        .and(with_state(pool))
+        .and_then(handlers::get_run_num)
 }
 
 pub fn results_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {

@@ -8,11 +8,13 @@
     <title>Quick Poll - Run</title>
 </head>
 <body>
-    <h1>Title</h1>
-    <h1>Link</h1>
-    <img src="" alt="QR Code"/>
-    <span>Submitted responses: x</span>
-    <span>In progress: x</span>
-    <input type="button" value="Finish"/>
+    <div class="full-container">
+        <h1 class="run-title">{{title}}</h1>
+        <h2 class="run-link">http://indi-mac.local/respond/{{kind}}/{{poll_id}}</h2>
+        <!-- 60 = 29 * 2 + 2 -->
+        <img class="qr-code" width="60" height="60" src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=http%3A%2F%2Findi-mac.local%2Frespond%2F{{kind}}%2F{{poll_id}}" alt="QR Code"/>
+        <span class="run-progress">Submitted: x, in-progress: y</span>
+        <input type="button" class="btn btn-primary" value="Close Poll and View Results"/>
+    </div>
 </body>
 </html>
