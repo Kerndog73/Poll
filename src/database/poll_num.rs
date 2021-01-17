@@ -132,3 +132,20 @@ pub async fn get_poll_title_num(pool: Pool, poll_id: &PollID, session_id: &Sessi
     )).await?;
     Ok(conn.query_opt(&stmt, &[poll_id, session_id]).await?.map(|row| row.get(0)))
 }
+
+pub async fn get_response_count_num(pool: Pool)
+    -> Result<std::collections::HashMap<PollID, usize>, PoolError>
+{
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        SELECT poll_id, COUNT(*)
+        FROM poll_numerical_response
+        GROUP BY poll_id
+    ").await?;
+    Ok(conn.query(&stmt, &[])
+        .await?
+        .iter()
+        .map(|row| (row.get(0), row.get::<_, i64>(1) as usize))
+        .collect()
+    )
+}

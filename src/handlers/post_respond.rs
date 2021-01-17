@@ -15,9 +15,13 @@ struct StatusTemplate {
     message: &'static str,
 }
 
-pub async fn post_respond_num(poll_id: db::PollID, mut session_id: db::SessionID, req: RespondNumRequest, pool: Pool)
-    -> Result<Box<dyn warp::Reply>, warp::Rejection>
-{
+pub async fn post_respond_num(
+    poll_id: db::PollID,
+    mut session_id: db::SessionID,
+    req: RespondNumRequest,
+    pool: Pool,
+    mut ctx: super::EventContext
+) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
     let mut set_cookie = false;
     if !try_500!(db::valid_session_id(pool.clone(), &session_id).await) {
         session_id = try_500!(db::create_session(pool.clone()).await);
@@ -35,10 +39,11 @@ pub async fn post_respond_num(poll_id: db::PollID, mut session_id: db::SessionID
         return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST));
     }
 
-    let reply = if !try_500!(db::respond_poll_num(pool, &poll_id, &session_id, response).await) {
-        StatusTemplate { message: "Cannot respond more than once" }
-    } else {
+    let reply = if try_500!(db::respond_poll_num(pool, &poll_id, &session_id, response).await) {
+        ctx.add_response_num(poll_id).await;
         StatusTemplate { message: "Success!" }
+    } else {
+        StatusTemplate { message: "Cannot respond more than once" }
     };
 
     if set_cookie {

@@ -65,3 +65,11 @@ form {
   @extend .light-text;
   margin: $headings-margin-bottom 0;
 }
+
+.flash-animation {
+  animation: flashAnimation 1s forwards;
+}
+
+@keyframes flashAnimation {
+  from { color: $primary }
+}

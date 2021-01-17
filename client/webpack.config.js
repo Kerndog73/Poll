@@ -26,7 +26,8 @@ module.exports = {
             filename: "css/[name].css"
         }),
         new PurgecssPlugin({
-            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`, { nodir: true }),
+            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`, { nodir: true })
+                .concat(glob.sync(`${path.join(__dirname, "src")}/**/*`, { nodir: true })),
         }),
         new HtmlWebpackPlugin({
             filename: "home.html",
