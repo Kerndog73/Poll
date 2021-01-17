@@ -1,7 +1,6 @@
-const progress = document.getElementById("run-progress");
+const progress = document.getElementById("run-progress-count");
 const source = new EventSource(EVENT_URL);
 
 source.onmessage = e => {
-    const pair = e.data.split(",");
-    progress.innerText = `Submitted: ${pair[0]}, in-progress: ${pair[1]}`;
+    progress.innerText = e.data;
 };

@@ -9,7 +9,7 @@ function parse(element, def) {
         element.setCustomValidity("");
         return def;
     }
-    return integer.checked ? parseInt(element.value) : parseFloat(element.value);
+    return parseFloat(element.value);
 }
 
 function validate() {

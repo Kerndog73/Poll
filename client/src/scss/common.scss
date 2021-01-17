@@ -60,7 +60,7 @@ form {
   word-break: break-all;
 }
 
-#run-progress {
+.run-progress {
   @extend .light-text;
   margin: $headings-margin-bottom 0;
 }
