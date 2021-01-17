@@ -42,6 +42,7 @@ async fn main() {
         .or(filters::post_respond_num(pool.clone()))
         .or(filters::get_csv_num(pool.clone()))
         .or(filters::events_num(pool.clone(), ctx))
+        .or(filters::get_qr())
         .or(filters::favicon())
         .or(filters::js())
         .or(filters::css())

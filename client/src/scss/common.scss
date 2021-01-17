@@ -58,6 +58,7 @@ form {
 .run-link {
   @extend .light-text;
   word-break: break-all;
+  font-family: $font-family-monospace;
 }
 
 .run-progress {
