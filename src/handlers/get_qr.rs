@@ -75,7 +75,7 @@ pub async fn get_qr(kind: char, poll_id: db::PollID) -> Result<Box<dyn warp::Rep
         return Ok(Box::new(warp::http::StatusCode::NOT_FOUND));
     }
 
-    let data = format!("http://indi-mac/respond/{}/{}", kind, poll_id);
+    let data = format!("http://indi-mac.local/respond/{}/{}", kind, poll_id);
     let code = try_500!(QrCode::with_error_correction_level(data, EcLevel::L));
 
     let width = code.width();
