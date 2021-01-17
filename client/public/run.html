@@ -11,7 +11,7 @@
     <div class="full-container">
         <h1 class="run-title">{{title}}</h1>
         <h2 class="run-link">http://indi-mac.local/respond/{{kind}}/{{poll_id}}</h2>
-        <img class="qr-code" src="/qr?data=http%3A%2F%2Findi-mac.local%2Frespond%2F{{kind}}%2F{{poll_id}}" alt="QR Code"/>
+        <img class="qr-code" src="/qr/{{kind}}/{{poll_id}}" alt="QR Code"/>
         <span class="run-progress">Submitted responses: <span id="run-progress-count">0</span></span>
         <input type="button" class="btn btn-primary" value="Close Poll and View Results"/>
     </div>

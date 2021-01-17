@@ -99,9 +99,8 @@ pub fn events_num(pool: Pool, ctx: handlers::EventContext) -> impl Filter<Extrac
 }
 
 pub fn get_qr() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("qr")
+    warp::path!("qr" / char / PollID)
         .and(warp::get())
-        .and(warp::query())
         .and_then(handlers::get_qr)
         .map(utils::cache_short)
 }

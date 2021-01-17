@@ -1,11 +1,11 @@
-use serde::Deserialize;
+use crate::database as db;
 use qrcode::{QrCode, render::{Pixel, Canvas, Renderer}, types::Color, EcLevel};
 
 #[derive(Clone, Copy)]
 struct ImagePixel(u8);
 
 impl Pixel for ImagePixel {
-    type Image = Vec<u8>;
+    type Image = <ImageCanvas as Canvas>::Image;
     type Canvas = ImageCanvas;
 
     fn default_unit_size() -> (u32, u32) {
@@ -31,7 +31,7 @@ struct ImageCanvas {
 
 impl Canvas for ImageCanvas {
     type Pixel = ImagePixel;
-    type Image = Vec<u8>;
+    type Image = Result<Vec<u8>, png::EncodingError>;
 
     fn new(width: u32, height: u32, dark_pixel: Self::Pixel, light_pixel: Self::Pixel) -> Self {
         let pitch = ((width + 7) / 8) as usize;
@@ -61,29 +61,27 @@ impl Canvas for ImageCanvas {
             encoder.set_depth(png::BitDepth::One);
             encoder.set_palette(vec![
                 self.light_pixel.0, self.light_pixel.0, self.light_pixel.0,
-                self.dark_pixel.0, self.dark_pixel.0, self.dark_pixel.0
+                self.dark_pixel.0, self.dark_pixel.0, self.dark_pixel.0,
             ]);
-            let mut writer = encoder.write_header().unwrap();
-            writer.write_image_data(&self.image_buffer).unwrap();
+            let mut writer = encoder.write_header()?;
+            writer.write_image_data(&self.image_buffer)?;
         }
-        bytes
+        Ok(bytes)
     }
 }
 
-#[derive(Deserialize)]
-pub struct QrQuery {
-    data: String
-}
+pub async fn get_qr(kind: char, poll_id: db::PollID) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
+    if (kind != 'n' && kind != 'c') || poll_id.len() != db::POLL_ID_LENGTH {
+        return Ok(Box::new(warp::http::StatusCode::NOT_FOUND));
+    }
 
-pub async fn get_qr(query: QrQuery) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
-    let code = match QrCode::with_error_correction_level(query.data, EcLevel::L) {
-        Ok(code) => code,
-        Err(_) => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
-    };
+    let data = format!("http://indi-mac/respond/{}/{}", kind, poll_id);
+    let code = try_500!(QrCode::with_error_correction_level(data, EcLevel::L));
+
     let width = code.width();
     let colors = code.into_colors();
     let renderer = Renderer::<ImagePixel>::new(&colors, width, 1);
-    let image = renderer.build();
+    let image = try_500!(renderer.build());
 
     Ok(Box::new(warp::reply::with_header(
         image,
