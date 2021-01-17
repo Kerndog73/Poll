@@ -27,7 +27,8 @@ function validate() {
     }
 }
 
-function adjustStep() {
+function toggleInteger() {
+    validate();
     if (integer.checked) {
         minimum.step = "1";
         maximum.step = "1";
@@ -41,17 +42,16 @@ function adjustStep() {
     }
 }
 
-minimum.addEventListener("input", validate);
-maximum.addEventListener("input", validate);
-integer.addEventListener("input", validate);
-integer.addEventListener("input", adjustStep);
+minimum.oninput = validate;
+maximum.oninput = validate;
+integer.oninput = toggleInteger;
 
-negateMinimum.addEventListener("click", () => {
+negateMinimum.onclick = () => {
     minimum.value = -minimum.value;
     validate();
-});
+};
 
-negateMaximum.addEventListener("click", () => {
+negateMaximum.onclick = () => {
     maximum.value = -maximum.value;
     validate();
-});
+};

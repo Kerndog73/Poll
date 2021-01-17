@@ -2,7 +2,8 @@ const path = require("path");
 const glob = require("glob");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const PurgecssPlugin = require("purgecss-webpack-plugin")
+const PurgecssPlugin = require("purgecss-webpack-plugin");
+const CssoWebpackPlugin = require("csso-webpack-plugin").default;
 
 module.exports = {
     entry: {
@@ -26,9 +27,10 @@ module.exports = {
             filename: "css/[name].css"
         }),
         new PurgecssPlugin({
-            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`, { nodir: true })
-                .concat(glob.sync(`${path.join(__dirname, "src")}/**/*`, { nodir: true })),
+            paths: glob.sync(`${path.join(__dirname, "public")}/**/*`, { nodir: true }),
+            safelist: ["flash-animation"]
         }),
+        new CssoWebpackPlugin(),
         new HtmlWebpackPlugin({
             filename: "home.html",
             template: "./public/home.html",
