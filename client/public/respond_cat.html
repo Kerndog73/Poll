@@ -8,15 +8,33 @@
     <title>Quick Poll - Respond</title>
 </head>
 <body>
-    <h1>Title</h1>
-    <label>
-        Choice 1
-        <input type="radio" name="choice"/>
-    </label>
-    <label>
-        Choice 2
-        <input type="radio" name="choice"/>
-    </label>
-    <input type="button" value="Submit"/>
+    <div class="form-container">
+        <form>
+            <h5>How was your experience with our product?</h5>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="option" id="option-0" value="0" required/>
+                    <label class="form-check-label" for="option-0">Very good</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="option" id="option-1" value="1" required/>
+                    <label class="form-check-label" for="option-1">Good</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="option" id="option-2" value="2" required/>
+                    <label class="form-check-label" for="option-2">Neither good nor bad</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="option" id="option-3" value="3" required/>
+                    <label class="form-check-label" for="option-3">Bad</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="option" id="option-4" value="4" required/>
+                    <label class="form-check-label" for="option-4">Very bad</label>
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit"/>
+        </form>
+    </div>
 </body>
 </html>

@@ -62,6 +62,12 @@ pub fn get_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Er
         .map(utils::cache_short)
 }
 
+pub fn get_respond_cat(_pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("respond" / "c")
+        .and(warp::get())
+        .and(warp::fs::file("./client/dist/respond_cat.html"))
+}
+
 pub fn post_configure_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("configure" / "n")
         .and(warp::post())
