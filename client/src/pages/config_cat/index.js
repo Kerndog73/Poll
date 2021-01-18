@@ -4,7 +4,7 @@ const firstOption = options.firstElementChild.firstElementChild;
 const MAX_OPTIONS = 16;
 
 function template(i) {
-    return `<input class="form-control" name="option" type="text" maxlength="64" placeholder="Choice ${i}" aria-label="Choice ${i}"/>`;
+    return `<input class="form-control" type="text" maxlength="64" placeholder="Choice ${i}" aria-label="Choice ${i}"/>`;
 }
 
 function optionInput(e) {
@@ -18,22 +18,33 @@ function optionInput(e) {
         div.innerHTML = template(options.childElementCount + 1);
         const input = div.firstElementChild;
         input.oninput = optionInput;
-        input.onchange = optionChange;
+        input.onblur = optionBlur;
         input.onfocus = optionFocus;
+        if (options.childElementCount === 1) {
+            input.setAttribute("required", "");
+        }
         options.appendChild(div);
     }
 }
 
-function optionChange(e) {
-    if (!e.target.value.length && e.target.parentElement !== options.lastElementChild) {
-        e.target.parentElement.remove();
-        const children = options.children;
-        const count = children.length;
-        for (let i = 0; i !== count; ++i) {
-            const input = children[i].firstElementChild;
-            const text = "Choice " + (i + 1);
-            input.setAttribute("placeholder", text);
-            input.setAttribute("aria-label", text);
+function optionBlur(e) {
+    if (e.target.value.length) {
+        e.target.setAttribute("name", "option");
+    } else {
+        e.target.removeAttribute("name");
+        if (e.target.parentElement !== options.lastElementChild) {
+            e.target.parentElement.remove();
+            const children = options.children;
+            const count = children.length;
+            for (let i = 0; i !== count; ++i) {
+                const input = children[i].firstElementChild;
+                const text = "Choice " + (i + 1);
+                input.setAttribute("placeholder", text);
+                input.setAttribute("aria-label", text);
+                if (i < 2) {
+                    input.setAttribute("required", "");
+                }
+            }
         }
     }
 }
@@ -43,6 +54,6 @@ function optionFocus(e) {
 }
 
 firstOption.oninput = optionInput;
-firstOption.onchange = optionChange;
+firstOption.onblur = optionBlur;
 firstOption.onfocus = optionFocus;
 
