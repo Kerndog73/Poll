@@ -8,20 +8,36 @@
     <title>Quick Poll - Configure</title>
 </head>
 <body>
-    <label>
-        Title:
-        <input type="text"/>
-    </label>
-    <label>
-        Mutually exclusive choices:
-        <input type="checkbox"/>
-    </label>
-    <div>
-        <label>
-            Choice 1:
-            <input type="text"/>
-        </label>
+    <div class="form-container">
+        <form>
+            <div class="form-group">
+                <label class="form-label" for="title">Title</label>
+                <input
+                        class="form-control"
+                        id="title"
+                        name="title"
+                        type="text"
+                        maxlength="128"
+                        required
+                        placeholder="Which of these to you prefer?"
+                />
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="mutex" name="mutex" checked/>
+                    <label class="form-check-label" for="mutex">Mutually exclusive choices</label>
+                </div>
+            </div>
+
+            <div id="options">
+                <div class="form-group">
+                    <input class="form-control" name="option" type="text" maxlength="64" placeholder="Choice 1" aria-label="Choice 1"/>
+                </div>
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Create"/>
+        </form>
     </div>
-    <input type="button" value="Create"/>
 </body>
 </html>

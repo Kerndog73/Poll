@@ -73,3 +73,16 @@ form {
 @keyframes flashAnimation {
   from { color: $primary }
 }
+
+#options {
+  @extend .form-group;
+  max-height: 200px;
+  padding: $card-spacer-x;
+  background-color: $gray-500;
+  border-radius: $border-radius;
+  overflow: scroll;
+}
+
+#options > .form-group:last-child {
+  margin-bottom: 0;
+}
