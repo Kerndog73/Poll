@@ -1,7 +1,7 @@
 use crate::utils;
 use serde::Deserialize;
 use crate::database as db;
-use deadpool_postgres::{Pool, PoolError};
+use deadpool_postgres::Pool;
 
 pub type ConfigureCatRequest = Vec<(String, String)>;
 
@@ -39,16 +39,17 @@ fn parse_poll_cat(session_id: db::SessionID, req: ConfigureCatRequest) -> Option
 pub async fn post_configure_cat(mut session_id: db::SessionID, req: ConfigureCatRequest, pool: Pool)
     -> Result<Box<dyn warp::Reply>, warp::Rejection>
 {
-    // let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
+    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
 
     let poll = match parse_poll_cat(session_id.clone(), req) {
         Some(poll) => poll,
         None => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
     };
 
-    println!("{:?}", poll);
+    let poll_id = try_500!(db::create_poll_cat(pool.clone(), poll).await);
+    let redirect = utils::redirect_string(format!("/run/c/{}", poll_id));
 
-    Ok(Box::new(warp::http::StatusCode::NO_CONTENT))
+    Ok(utils::maybe_set_session_cookie(redirect, session_id, set_cookie))
 }
 
 #[derive(Deserialize)]
@@ -67,23 +68,19 @@ fn parse_or(string: String, default: f64) -> Result<f64, std::num::ParseFloatErr
     }
 }
 
-pub async fn post_configure_num(mut session_id: db::SessionID, req: ConfigureNumRequest, pool: Pool)
-    -> Result<Box<dyn warp::Reply>, warp::Rejection>
-{
-    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
-
+fn parse_poll_num(session_id: db::SessionID, req: ConfigureNumRequest) -> Option<db::PollNum> {
     let minimum = match parse_or(req.minimum, -f64::INFINITY) {
         Ok(n) => n,
-        Err(_) => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
+        Err(_) => return None
     };
 
     let maximum = match parse_or(req.maximum, f64::INFINITY) {
         Ok(n) => n,
-        Err(_) => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
+        Err(_) => return None
     };
 
     let poll = db::PollNum {
-        owner: session_id.clone(),
+        owner: session_id,
         title: req.title,
         minimum,
         maximum,
@@ -91,8 +88,21 @@ pub async fn post_configure_num(mut session_id: db::SessionID, req: ConfigureNum
     };
 
     if !db::valid_poll_num(&poll) {
-        return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST));
+        return None;
     }
+
+    Some(poll)
+}
+
+pub async fn post_configure_num(mut session_id: db::SessionID, req: ConfigureNumRequest, pool: Pool)
+    -> Result<Box<dyn warp::Reply>, warp::Rejection>
+{
+    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
+
+    let poll = match parse_poll_num(session_id.clone(), req) {
+        Some(poll) => poll,
+        None => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
+    };
 
     let poll_id = try_500!(db::create_poll_num(pool, poll).await);
     let redirect = utils::redirect_string(format!("/run/n/{}", poll_id));
