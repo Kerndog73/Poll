@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="form-container">
-        <form>
+        <form action="/respond/c/{{poll_id|safe}}" method="post">
             <h5>{{title}}</h5>
             <div class="form-group">
                 {% for option in options %}

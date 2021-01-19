@@ -11,6 +11,8 @@ pub struct PollCat {
     pub options: Vec<String>,
 }
 
+pub struct ResponseCat(pub i32);
+
 pub async fn create_poll_cat(pool: Pool, poll: PollCat) -> Result<PollID, PoolError> {
     let conn = pool.get().await?;
     let poll_stmt = conn.prepare("
@@ -75,4 +77,14 @@ pub async fn get_poll_cat(pool: Pool, poll_id: &PollID) -> Result<Option<PollCat
         .collect();
 
     Ok(Some(poll))
+}
+
+pub async fn respond_poll_cat(pool: Pool, poll_id: &PollID, session_id: &SessionID, res: ResponseCat) -> Result<bool, PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        INSERT INTO poll_categorical_response (poll_id, session_id, value)
+        VALUES ($1, $2, $3)
+        ON CONFLICT DO NOTHING
+    ").await?;
+    Ok(conn.execute(&stmt, &[poll_id, session_id, &res.0]).await? > 0)
 }

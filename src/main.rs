@@ -41,6 +41,7 @@ async fn main() {
         .or(filters::get_respond_num(pool.clone()))
         .or(filters::post_configure_cat(pool.clone()))
         .or(filters::post_configure_num(pool.clone()))
+        .or(filters::post_respond_cat(pool.clone(), ctx.clone()))
         .or(filters::post_respond_num(pool.clone(), ctx.clone()))
         .or(filters::get_csv_num(pool.clone()))
         .or(filters::events(pool, ctx))
