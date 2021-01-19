@@ -15,19 +15,16 @@ pub type RespondCatRequest = Vec<(String, u32)>;
 fn parse_response(poll: db::PollCat, req: RespondCatRequest) -> Option<db::ResponseCat> {
     if poll.mutex {
         if req.len() != 1 { return None; }
-        if req[0].0 != "option" { return None; }
-        if req[0].1 >= poll.options.len() as u32 { return None; }
-        Some(db::ResponseCat(req[0].1 as i32))
     } else {
         if req.len() > poll.options.len() { return None; }
-        let mut set = 0;
-        for option in req.iter() {
-            if option.0 != "option" { return None; }
-            if option.1 >= poll.options.len() as u32 { return None; }
-            set |= 1 << option.1;
-        }
-        Some(db::ResponseCat(set))
     }
+    let mut set = 0;
+    for option in req.iter() {
+        if option.0 != "option" { return None; }
+        if option.1 >= poll.options.len() as u32 { return None; }
+        set |= 1 << option.1;
+    }
+    Some(db::ResponseCat(set))
 }
 
 pub async fn post_respond_cat(

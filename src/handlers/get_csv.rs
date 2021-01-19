@@ -35,9 +35,9 @@ pub async fn get_csv_cat(poll_id: db::PollID, session_id: db::SessionID, pool: P
             if i >= results.len() {
                 writer.serialize(("", &poll.options[i])).unwrap();
             } else if i >= poll.options.len() {
-                writer.serialize((results[i],)).unwrap();
+                writer.serialize((results[i].trailing_zeros(),)).unwrap();
             } else {
-                writer.serialize((results[i], &poll.options[i])).unwrap();
+                writer.serialize((results[i].trailing_zeros(), &poll.options[i])).unwrap();
             }
         }
     } else {

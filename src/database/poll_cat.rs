@@ -104,3 +104,47 @@ pub async fn get_poll_results_cat(pool: Pool, poll_id: &PollID) -> Result<Vec<i3
         .collect()
     )
 }
+
+pub struct AggResultsCat {
+    pub total: usize,
+    pub histogram: Vec<usize>,
+}
+
+pub async fn get_aggregate_results_cat(pool: Pool, poll_id: &PollID) -> Result<AggResultsCat, PoolError> {
+    // static_assert!(OPTION_COUNT == 16)
+    let _: [u8; OPTION_COUNT] = <[u8; 16] as Default>::default();
+
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        SELECT
+            COUNT(*),
+            COUNT(*) FILTER (WHERE value & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 1) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 2) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 3) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 4) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 5) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 6) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 7) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 8) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 9) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 10) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 11) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 12) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 13) & 1 = 1),
+            COUNT(*) FILTER (WHERE (value >> 14) & 1 = 1),
+            COUNT(*) FILTER (WHERE value >> 15 = 1)
+        FROM poll_categorical_response
+        WHERE poll_id = $1
+    ").await?;
+
+    let row = conn.query_one(&stmt, &[poll_id]).await?;
+    let total = row.get::<_, i64>(0) as usize;
+
+    let mut histogram = vec![0; OPTION_COUNT];
+    for i in 0..OPTION_COUNT {
+        histogram[i] = row.get::<_, i64>(i + 1) as usize;
+    }
+
+    Ok(AggResultsCat { total, histogram })
+}
