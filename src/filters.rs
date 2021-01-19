@@ -1,10 +1,8 @@
 use log::debug;
 use warp::Filter;
-use crate::utils;
-use crate::handlers;
 use deadpool_postgres::Pool;
 use std::convert::Infallible;
-use crate::database::{PollID, SessionID};
+use crate::{db::{PollID, SessionID}, handlers, utils};
 
 fn with_state<S: Clone + Send>(state: S) -> impl Filter<Extract = (S,), Error = Infallible> + Clone {
     warp::any().map(move || state.clone())

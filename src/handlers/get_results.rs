@@ -1,8 +1,7 @@
+use crate::db;
 use askama::Template;
-use crate::database as db;
 use deadpool_postgres::Pool;
 
-#[derive(Debug)]
 struct AggOption {
     name: String,
     frequency: usize,
@@ -37,9 +36,6 @@ pub async fn get_results_cat(poll_id: db::PollID, session_id: db::SessionID, poo
             percent: results.histogram[i] as f64 / results.total as f64,
         })
         .collect();
-
-    println!("{}", results.total);
-    println!("{:?}", options);
 
     Ok(Box::new(TemplateCat {
         poll_id,

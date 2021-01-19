@@ -1,5 +1,5 @@
+use crate::db;
 use askama::Template;
-use crate::database as db;
 use deadpool_postgres::Pool;
 
 #[derive(Template)]

@@ -1,6 +1,5 @@
-use crate::utils;
+use crate::{db, utils};
 use serde::Deserialize;
-use crate::database as db;
 use deadpool_postgres::Pool;
 
 pub type ConfigureCatRequest = Vec<(String, String)>;

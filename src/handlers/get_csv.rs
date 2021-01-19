@@ -1,4 +1,4 @@
-use crate::database as db;
+use crate::db;
 use deadpool_postgres::Pool;
 
 fn reply_csv(writer: csv::Writer::<Vec<u8>>) -> impl warp::Reply {

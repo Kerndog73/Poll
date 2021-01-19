@@ -1,7 +1,6 @@
-use crate::utils;
 use askama::Template;
+use crate::{db, utils};
 use serde::Deserialize;
-use crate::database as db;
 use deadpool_postgres::Pool;
 
 #[derive(Template)]

@@ -1,10 +1,4 @@
-use crate::database as db;
-
-/*
-pub fn redirect_str(url: &'static str) -> impl warp::Reply {
-    warp::redirect(warp::http::Uri::from_static(url))
-}
-*/
+use crate::db;
 
 pub fn redirect_string(url: String) -> impl warp::Reply {
     warp::redirect(warp::http::Uri::from_maybe_shared(url).unwrap())

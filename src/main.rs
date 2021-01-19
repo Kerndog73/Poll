@@ -2,7 +2,7 @@
 mod utils;
 mod filters;
 mod handlers;
-mod database;
+mod db;
 
 use warp::Filter;
 use deadpool_postgres::{Pool, Manager};

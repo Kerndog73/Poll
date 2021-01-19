@@ -1,4 +1,4 @@
-use crate::database as db;
+use crate::db;
 use deadpool_postgres::{Pool, PoolError};
 
 pub async fn create_session_if_invalid(pool: Pool, session_id: &mut db::SessionID) -> Result<bool, PoolError> {

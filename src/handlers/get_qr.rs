@@ -1,4 +1,4 @@
-use crate::database as db;
+use crate::db;
 use qrcode::{QrCode, render::{Pixel, Canvas, Renderer}, types::Color, EcLevel};
 
 #[derive(Clone, Copy)]

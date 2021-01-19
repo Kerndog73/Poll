@@ -1,5 +1,5 @@
+use crate::db;
 use std::sync::Arc;
-use crate::database as db;
 use tokio::sync::{RwLock, mpsc};
 use futures::{Stream, StreamExt};
 use deadpool_postgres::{Pool, PoolError};
