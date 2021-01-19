@@ -108,6 +108,15 @@ pub fn post_respond_num(pool: Pool, ctx: handlers::EventContext) -> impl Filter<
         .and_then(handlers::post_respond_num)
 }
 
+pub fn get_csv_cat(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("csv" / "c" / PollID)
+        .and(warp::get())
+        .and(with_session_id())
+        .and(with_state(pool))
+        .and_then(handlers::get_csv_cat)
+        .map(utils::cache_short)
+}
+
 pub fn get_csv_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("csv" / "n" / PollID)
         .and(warp::get())

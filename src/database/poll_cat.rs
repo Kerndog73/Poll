@@ -88,3 +88,19 @@ pub async fn respond_poll_cat(pool: Pool, poll_id: &PollID, session_id: &Session
     ").await?;
     Ok(conn.execute(&stmt, &[poll_id, session_id, &res.0]).await? > 0)
 }
+
+pub async fn get_poll_results_cat(pool: Pool, poll_id: &PollID) -> Result<Vec<i32>, PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        SELECT value
+        FROM poll_categorical_response
+        WHERE poll_id = $1
+        ORDER BY value
+    ").await?;
+    Ok(conn.query(&stmt, &[poll_id])
+        .await?
+        .iter()
+        .map(|row| row.get(0))
+        .collect()
+    )
+}
