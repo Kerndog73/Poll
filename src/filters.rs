@@ -54,10 +54,12 @@ pub fn results_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Re
         .map(utils::cache_short)
 }
 
-pub fn get_respond_cat(_pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("respond" / "c")
+pub fn get_respond_cat(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("respond" / "c" / PollID)
         .and(warp::get())
-        .and(warp::fs::file("./client/dist/respond_cat.html"))
+        .and(with_state(pool))
+        .and_then(handlers::get_respond_cat)
+        .map(utils::cache_short)
 }
 
 pub fn get_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {

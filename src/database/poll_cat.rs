@@ -36,3 +36,43 @@ pub async fn create_poll_cat(pool: Pool, poll: PollCat) -> Result<PollID, PoolEr
 
     Ok(poll_id)
 }
+
+pub async fn get_poll_cat(pool: Pool, poll_id: &PollID) -> Result<Option<PollCat>, PoolError> {
+    if poll_id.len() != POLL_ID_LENGTH {
+        return Ok(None);
+    }
+
+    let conn = pool.get().await?;
+    let poll_stmt = conn.prepare(concat!("
+        SELECT session_id, title, mutex
+        FROM poll
+        JOIN poll_categorical ON poll.poll_id = poll_categorical.poll_id
+        WHERE poll.poll_id = $1
+        AND creation_time > NOW() - ", poll_duration!()
+    )).await?;
+    let option_stmt = conn.prepare("
+        SELECT name
+        FROM poll_categorical_option
+        WHERE poll_id = $1
+        ORDER BY sequence
+    ").await?;
+
+    let poll = conn.query_opt(&poll_stmt, &[poll_id]).await?.map(|row| PollCat {
+        owner: row.get(0),
+        title: row.get(1),
+        mutex: row.get(2),
+        options: Vec::new(),
+    });
+    let mut poll = match poll {
+        Some(poll) => poll,
+        None => return Ok(None)
+    };
+
+    poll.options = conn.query(&option_stmt, &[poll_id])
+        .await?
+        .iter()
+        .map(|row| row.get(0))
+        .collect();
+
+    Ok(Some(poll))
+}
