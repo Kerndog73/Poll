@@ -37,12 +37,12 @@ pub fn get_configure_num() -> impl Filter<Extract = impl warp::Reply, Error = wa
         .map(utils::cache_long)
 }
 
-pub fn get_run_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("run" / "n" / PollID)
+pub fn get_run(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("run" / char / PollID)
         .and(warp::get())
         .and(with_session_id())
         .and(with_state(pool))
-        .and_then(handlers::get_run_num)
+        .and_then(handlers::get_run)
         .map(utils::cache_short)
 }
 
@@ -105,13 +105,13 @@ pub fn get_csv_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error 
         .map(utils::cache_short)
 }
 
-pub fn events_num(pool: Pool, ctx: handlers::EventContext) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("events" / "n" / PollID)
+pub fn events(pool: Pool, ctx: handlers::EventContext) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("events" / PollID)
         .and(warp::get())
         .and(with_session_id())
         .and(with_state(pool))
         .and(with_state(ctx))
-        .and_then(handlers::events_num)
+        .and_then(handlers::events)
 }
 
 pub fn get_qr() -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {

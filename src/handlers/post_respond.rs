@@ -36,7 +36,7 @@ pub async fn post_respond_num(
     }
 
     let reply = if try_500!(db::respond_poll_num(pool, &poll_id, &session_id, response).await) {
-        ctx.add_response_num(poll_id).await;
+        ctx.add_response(poll_id).await;
         StatusTemplate { message: "Success!" }
     } else {
         StatusTemplate { message: "Cannot respond more than once" }

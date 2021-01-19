@@ -71,7 +71,7 @@ impl Canvas for ImageCanvas {
 }
 
 pub async fn get_qr(kind: char, poll_id: db::PollID) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
-    if (kind != 'n' && kind != 'c') || poll_id.len() != db::POLL_ID_LENGTH {
+    if (kind != 'c' && kind != 'n') || poll_id.len() != db::POLL_ID_LENGTH {
         return Ok(Box::new(warp::http::StatusCode::NOT_FOUND));
     }
 
