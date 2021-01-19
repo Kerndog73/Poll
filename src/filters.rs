@@ -54,6 +54,12 @@ pub fn results_num() -> impl Filter<Extract = impl warp::Reply, Error = warp::Re
         .map(utils::cache_short)
 }
 
+pub fn get_respond_cat(_pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("respond" / "c")
+        .and(warp::get())
+        .and(warp::fs::file("./client/dist/respond_cat.html"))
+}
+
 pub fn get_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("respond" / "n" / PollID)
         .and(warp::get())
@@ -62,10 +68,13 @@ pub fn get_respond_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Er
         .map(utils::cache_short)
 }
 
-pub fn get_respond_cat(_pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("respond" / "c")
-        .and(warp::get())
-        .and(warp::fs::file("./client/dist/respond_cat.html"))
+pub fn post_configure_cat(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+    warp::path!("configure" / "c")
+        .and(warp::post())
+        .and(with_session_id())
+        .and(warp::body::form())
+        .and(with_state(pool))
+        .and_then(handlers::post_configure_cat)
 }
 
 pub fn post_configure_num(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {

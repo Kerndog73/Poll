@@ -22,11 +22,7 @@ pub async fn post_respond_num(
     pool: Pool,
     mut ctx: super::EventContext
 ) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
-    let mut set_cookie = false;
-    if !try_500!(db::valid_session_id(pool.clone(), &session_id).await) {
-        session_id = try_500!(db::create_session(pool.clone()).await);
-        set_cookie = true;
-    }
+    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
 
     let poll = match try_500!(db::get_poll_num(pool.clone(), &poll_id).await) {
         Some(poll) => poll,
@@ -46,9 +42,5 @@ pub async fn post_respond_num(
         StatusTemplate { message: "Cannot respond more than once" }
     };
 
-    if set_cookie {
-        Ok(Box::new(utils::set_session_id_cookie(reply, session_id)))
-    } else {
-        Ok(Box::new(reply))
-    }
+    Ok(utils::maybe_set_session_cookie(reply, session_id, set_cookie))
 }
