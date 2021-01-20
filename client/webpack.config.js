@@ -29,7 +29,7 @@ module.exports = {
         }),
         new PurgecssPlugin({
             paths: glob.sync(`${path.join(__dirname, "public")}/**/*`, { nodir: true }),
-            safelist: ["flash-animation"]
+            safelist: ["flash-animation", "text-danger"]
         }),
         new CssoWebpackPlugin(),
         new HtmlWebpackPlugin({

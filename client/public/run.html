@@ -12,10 +12,10 @@
         <h1 class="run-title">{{title}}</h1>
         <h2 class="run-link">http://indi-mac.local/respond/{{kind}}/{{poll_id}}</h2>
         <img class="qr-code" src="/qr/{{kind}}/{{poll_id}}" alt="QR Code"/>
-        <span class="run-progress">Submitted responses: <span id="run-progress-count">0</span></span>
-        <span id="run-expire">{{expire}}</span>
+        <span id="run-progress">Submitted responses: <span id="run-progress-count">0</span></span>
+        <span class="run-expire">Expiration time: <time id="run-expire-time"></time></span>
         <a class="btn btn-primary" href="/results/{{kind}}/{{poll_id}}">Close Poll and View Results</a>
     </div>
-    <script>const EVENT_URL="/events/{{poll_id}}"</script>
+    <script>const EVENT_URL="/events/{{poll_id}}";const EXPIRE={{expire}}</script>
 </body>
 </html>

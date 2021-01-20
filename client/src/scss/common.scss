@@ -59,9 +59,14 @@ form {
   font-family: $font-family-monospace;
 }
 
-.run-progress {
+#run-progress {
   @extend .light-text;
-  margin: $headings-margin-bottom 0;
+  margin-top: $headings-margin-bottom;
+}
+
+.run-expire {
+  @extend .light-text;
+  margin-bottom: $headings-margin-bottom;
 }
 
 .flash-animation {

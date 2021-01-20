@@ -7,6 +7,7 @@ pub type PollID = String;
 
 pub const TITLE_LENGTH: usize = 128;
 
+// TODO: Don't forget to set this back to 1 day
 macro_rules! poll_duration {
     () => { "INTERVAL '10 day'" }
 }
