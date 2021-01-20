@@ -47,16 +47,18 @@ pub fn get_run(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = wa
 pub fn results_cat(pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
     warp::path!("results" / "c" / PollID)
         .and(warp::get())
-        .and(with_session_id())
-        .and(with_state(pool))
-        .and_then(handlers::get_results_cat)
+        .and(warp::fs::file("./client/dist/results_cat.html"))
+        .map(|_,f|f)
+        //.and(with_session_id())
+        //.and(with_state(pool))
+        //.and_then(handlers::get_results_cat)
         .map(utils::cache_short)
 }
 
 pub fn results_num(_pool: Pool) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-    warp::path!("results" / "n" / PollID)
+    warp::path!("results_cat" / "n" / PollID)
         .and(warp::get())
-        .and(warp::fs::file("./client/dist/results.html"))
+        .and(warp::fs::file("./client/dist/results_cat.html"))
         .map(|_,f|f)
         .map(utils::cache_short)
 }

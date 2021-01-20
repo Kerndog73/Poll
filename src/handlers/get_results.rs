@@ -9,7 +9,7 @@ struct AggOption {
 }
 
 #[derive(Template)]
-#[template(path = "results.html")]
+#[template(path = "results_cat.html")]
 struct TemplateCat {
     poll_id: db::PollID,
     title: String,

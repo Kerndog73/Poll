@@ -12,7 +12,7 @@ module.exports = {
         config_cat: "./src/pages/config_cat/index.js",
         config_num: "./src/pages/config_num/index.js",
         run: "./src/pages/run/index.js",
-        results: "./src/pages/results/index.js",
+        results_cat: "./src/pages/results_cat/index.js",
         respond_cat: "./src/pages/respond_cat/index.js",
         respond_num: "./src/pages/respond_num/index.js",
         status: "./src/pages/status/index.js",
@@ -52,9 +52,9 @@ module.exports = {
             chunks: ["common", "run"]
         }),
         new HtmlWebpackPlugin({
-            filename: "results.html",
-            template: "./public/results.html",
-            chunks: ["common", "results"]
+            filename: "results_cat.html",
+            template: "./public/results_cat.html",
+            chunks: ["common", "results_cat"]
         }),
         new HtmlWebpackPlugin({
             filename: "respond_cat.html",
