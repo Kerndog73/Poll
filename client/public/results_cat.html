@@ -14,16 +14,16 @@
 
             <div class="histogram">
                 {% for option in options %}
-                <span class="histogram-freq">{{option.count|safe}} ({{option.percent|safe}}%)</span>
+                <div>{{option.count|safe}} ({{option.percent|safe}}%)</div>
                 <div class="histogram-bar-container">
                     <div class="histogram-bar" style="width:{{option.percent|safe}}%"></div>
-                    <span class="histogram-label">{{option.name}}</span>
                     <div class="histogram-overlay"></div>
+                    <div class="histogram-label">{{option.name}}</div>
                 </div>
                 {% endfor %}
 
-                <span class="histogram-freq">{{total|safe}}</span>
-                <div class="histogram-total">Total</div>
+                <div>{{total|safe}}</div>
+                <div>Total</div>
             </div>
 
             <a class="btn btn-primary" download="results.csv" href="/csv/c/{{poll_id|safe}}">Download CSV</a>
