@@ -13,6 +13,7 @@ module.exports = {
         config_num: "./src/pages/config_num/index.js",
         run: "./src/pages/run/index.js",
         results_cat: "./src/pages/results_cat/index.js",
+        results_num: "./src/pages/results_num/index.js",
         respond_cat: "./src/pages/respond_cat/index.js",
         respond_num: "./src/pages/respond_num/index.js",
         status: "./src/pages/status/index.js",
@@ -55,6 +56,11 @@ module.exports = {
             filename: "results_cat.html",
             template: "./public/results_cat.html",
             chunks: ["common", "results_cat"]
+        }),
+        new HtmlWebpackPlugin({
+            filename: "results_num.html",
+            template: "./public/results_num.html",
+            chunks: ["common", "results_num"]
         }),
         new HtmlWebpackPlugin({
             filename: "respond_cat.html",

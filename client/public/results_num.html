@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color:#343a40"> <!-- $gray-800 from Bootstrap -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" href="/favicon.ico">
+    <title>Quick Poll - Results</title>
+</head>
+<body>
+    <div class="form-container">
+        <form>
+            <h5>{{title}}</h5>
+
+            <div class="table">
+                <div>Minimum</div>
+                <div class="text-right">{{minimum|safe}}</div>
+
+                <div>Median</div>
+                <div class="text-right">{{median|safe}}</div>
+
+                <div>Mean</div>
+                <div class="text-right">{{mean|safe}}</div>
+
+                <div>Maximum</div>
+                <div class="text-right">{{maximum|safe}}</div>
+
+                <div>Sum</div>
+                <div class="text-right">{{sum|safe}}</div>
+
+                <div>Count</div>
+                <div class="text-right">{{count|safe}}</div>
+            </div>
+
+            <a class="btn btn-primary" download="results.csv" href="/csv/n/{{poll_id|safe}}">Download CSV</a>
+        </form>
+    </div>
+</body>
+</html>

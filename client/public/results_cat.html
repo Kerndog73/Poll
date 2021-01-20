@@ -12,7 +12,7 @@
         <form>
             <h5>{{title}}</h5>
 
-            <div class="histogram">
+            <div class="table">
                 {% for option in options %}
                 <div>{{option.count|safe}} ({{option.percent|safe}}%)</div>
                 <div class="histogram-bar-container">

@@ -36,7 +36,7 @@ impl EventContext {
                     entry.remove();
                 }
             },
-            Entry::Vacant(_) => panic!()
+            Entry::Vacant(_) => {}
         }
     }
 

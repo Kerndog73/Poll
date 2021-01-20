@@ -98,3 +98,36 @@ pub async fn get_poll_results_num(pool: Pool, poll_id: &PollID) -> Result<Vec<f6
         .collect()
     )
 }
+
+pub struct AggResultsNum {
+    pub minimum: f64,
+    pub median: f64,
+    pub mean: f64,
+    pub maximum: f64,
+    pub sum: f64,
+    pub count: usize,
+}
+
+pub async fn get_aggregate_results_num(pool: Pool, poll_id: &PollID) -> Result<AggResultsNum, PoolError> {
+    let conn = pool.get().await?;
+    let stmt = conn.prepare("
+        SELECT
+            MIN(value),
+            PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY value),
+            AVG(value),
+            MAX(value),
+            SUM(value),
+            COUNT(*)
+        FROM poll_numerical_response
+        WHERE poll_id = $1
+    ").await?;
+    let row = conn.query_one(&stmt, &[poll_id]).await?;
+    Ok(AggResultsNum {
+        minimum: row.get(0),
+        median: row.get(1),
+        mean: row.get(2),
+        maximum: row.get(3),
+        sum: row.get(4),
+        count: row.get::<_, i64>(5) as usize,
+    })
+}
