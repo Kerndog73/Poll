@@ -80,7 +80,7 @@ pub async fn get_qr(kind: char, poll_id: db::PollID) -> Result<Box<dyn warp::Rep
 
     let width = code.width();
     let colors = code.into_colors();
-    let renderer = Renderer::<ImagePixel>::new(&colors, width, 1);
+    let renderer = Renderer::<ImagePixel>::new(&colors, width, 2);
     let image = try_500!(renderer.build());
 
     Ok(Box::new(warp::reply::with_header(

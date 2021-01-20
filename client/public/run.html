@@ -8,13 +8,23 @@
     <title>Quick Poll - Run</title>
 </head>
 <body>
-    <div class="full-container">
-        <h1 class="run-title">{{title}}</h1>
-        <h2 class="run-link">http://indi-mac.local/respond/{{kind}}/{{poll_id}}</h2>
-        <img class="qr-code" src="/qr/{{kind}}/{{poll_id}}" alt="QR Code"/>
-        <span id="run-progress">Submitted responses: <span id="run-progress-count">0</span></span>
-        <span class="run-expire">Expiration time: <time id="run-expire-time"></time></span>
-        <a class="btn btn-primary" href="/results/{{kind}}/{{poll_id}}">Close Poll and View Results</a>
+    <div class="form-container">
+        <form>
+            <h5 class="run-title">{{title}}</h5>
+            <h5 class="run-link">indi-mac.local/respond/{{kind}}/{{poll_id}}</h5>
+            <div class="qr-code-container">
+                <img class="qr-code" src="/qr/{{kind}}/{{poll_id}}" alt="QR Code"/>
+            </div>
+            <div id="run-progress">
+                <div>Submitted responses</div>
+                <div id="run-progress-count">0</div>
+            </div>
+            <div class="run-expire">
+                <div>Expiration date</div>
+                <time id="run-expire-time"></time>
+            </div>
+            <a class="btn btn-primary" href="/results/{{kind}}/{{poll_id}}">Close Poll and View Results</a>
+        </form>
     </div>
     <script>const EVENT_URL="/events/{{poll_id}}";const EXPIRE={{expire}}</script>
 </body>
