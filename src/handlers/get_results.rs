@@ -28,6 +28,10 @@ pub async fn get_results_cat(poll_id: db::PollID, session_id: db::SessionID, poo
         return Ok(Box::new(warp::http::StatusCode::NOT_FOUND));
     }
 
+    // This is a GET handler with side effects. It's still safe to cache because
+    // only the first request has side effects. Closing a closed poll is fine.
+    try_500!(db::close_poll(pool.clone(), &poll_id).await);
+
     let results = try_500!(db::get_aggregate_results_cat(pool, &poll_id).await);
     let total = results.total as f64;
     let mut options = poll.options.iter().enumerate()
@@ -70,6 +74,10 @@ pub async fn get_results_num(poll_id: db::PollID, session_id: db::SessionID, poo
     if poll.owner != session_id {
         return Ok(Box::new(warp::http::StatusCode::NOT_FOUND));
     }
+
+    // This is a GET handler with side effects. It's still safe to cache because
+    // only the first request has side effects. Closing a closed poll is fine.
+    try_500!(db::close_poll(pool.clone(), &poll_id).await);
 
     let results = try_500!(db::get_aggregate_results_num(pool, &poll_id).await);
 

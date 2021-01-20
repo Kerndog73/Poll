@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS poll (
     session_id CHAR(16) COLLATE "C" NOT NULL,
     creation_time TIMESTAMPTZ NOT NULL,
     title VARCHAR(128) NOT NULL,
+    closed BOOLEAN NOT NULL DEFAULT FALSE,
 
     PRIMARY KEY (poll_id),
 

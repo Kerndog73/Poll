@@ -33,8 +33,6 @@ pub async fn post_respond_cat(
     pool: Pool,
     mut ctx: super::EventContext
 ) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
-    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
-
     let poll = match try_500!(db::get_poll_cat(pool.clone(), &poll_id).await) {
         Some(poll) => poll,
         None => return Ok(Box::new(warp::http::StatusCode::NOT_FOUND))
@@ -45,7 +43,11 @@ pub async fn post_respond_cat(
         None => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
     };
 
-    let reply = if try_500!(db::respond_poll_cat(pool, &poll_id, &session_id, response).await) {
+    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
+
+    let reply = if try_500!(db::poll_is_closed(pool.clone(), &poll_id).await) {
+        StatusTemplate { message: "Cannot respond to closed poll" }
+    } else if try_500!(db::respond_poll_cat(pool, &poll_id, &session_id, response).await) {
         ctx.add_response(poll_id).await;
         StatusTemplate { message: "Success!" }
     } else {
@@ -67,8 +69,6 @@ pub async fn post_respond_num(
     pool: Pool,
     mut ctx: super::EventContext
 ) -> Result<Box<dyn warp::Reply>, warp::Rejection> {
-    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
-
     let poll = match try_500!(db::get_poll_num(pool.clone(), &poll_id).await) {
         Some(poll) => poll,
         None => return Ok(Box::new(warp::http::StatusCode::NOT_FOUND))
@@ -80,7 +80,11 @@ pub async fn post_respond_num(
         return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST));
     }
 
-    let reply = if try_500!(db::respond_poll_num(pool, &poll_id, &session_id, response).await) {
+    let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
+
+    let reply = if try_500!(db::poll_is_closed(pool.clone(), &poll_id).await) {
+        StatusTemplate { message: "Cannot respond to closed poll" }
+    } else if try_500!(db::respond_poll_num(pool, &poll_id, &session_id, response).await) {
         ctx.add_response(poll_id).await;
         StatusTemplate { message: "Success!" }
     } else {

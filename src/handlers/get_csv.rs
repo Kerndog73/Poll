@@ -26,10 +26,11 @@ pub async fn get_csv_cat(poll_id: db::PollID, session_id: db::SessionID, pool: P
 
     let mut writer = csv::WriterBuilder::new().flexible(true).from_writer(vec![]);
 
-    writer.serialize((poll.title,)).unwrap();
+    writer.write_record(&[poll.title]).unwrap();
 
     if poll.mutex {
-        writer.serialize(("Response", "Key")).unwrap();
+        // TODO: This probably makes more sense as a histogram.
+        writer.write_record(&["Response", "Key"]).unwrap();
         let len = results.len().max(poll.options.len());
         for i in 0..len {
             if i >= results.len() {
@@ -60,15 +61,15 @@ pub async fn get_csv_cat(poll_id: db::PollID, session_id: db::SessionID, pool: P
 pub async fn get_csv_num(poll_id: db::PollID, session_id: db::SessionID, pool: Pool)
     -> Result<Box<dyn warp::Reply>, warp::Rejection>
 {
-    let title = match try_500!(db::get_poll_title(pool.clone(), &poll_id, &session_id).await) {
-        Some(title) => title,
+    let poll = match try_500!(db::get_poll(pool.clone(), &poll_id, &session_id).await) {
+        Some(poll) => poll,
         None => return Ok(Box::new(warp::http::StatusCode::NOT_FOUND))
     };
     let results = try_500!(db::get_poll_results_num(pool, &poll_id).await);
 
     let mut writer = csv::WriterBuilder::new().from_writer(vec![]);
 
-    writer.serialize((title,)).unwrap();
+    writer.write_record(&[poll.title]).unwrap();
     for result in results.iter() {
         writer.serialize((result,)).unwrap()
     }
