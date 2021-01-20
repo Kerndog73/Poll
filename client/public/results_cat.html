@@ -10,49 +10,23 @@
 <body>
     <div class="form-container">
         <form>
-            <h5>How was your experience with our product?</h5>
+            <h5>{{title}}</h5>
 
             <div class="histogram">
-                <span class="histogram-freq">11 (55%)</span>
+                {% for option in options %}
+                <span class="histogram-freq">{{option.count|safe}} ({{option.percent|safe}}%)</span>
                 <div class="histogram-bar-container">
-                    <div class="histogram-bar" style="width:55%"></div>
-                    <span class="histogram-label">Good</span>
+                    <div class="histogram-bar" style="width:{{option.percent|safe}}%"></div>
+                    <span class="histogram-label">{{option.name}}</span>
                     <div class="histogram-overlay"></div>
                 </div>
+                {% endfor %}
 
-                <span class="histogram-freq">6 (30%)</span>
-                <div class="histogram-bar-container">
-                    <div class="histogram-bar" style="width:30%"></div>
-                    <span class="histogram-label">Neither good nor bad</span>
-                    <div class="histogram-overlay"></div>
-                </div>
-
-                <span class="histogram-freq">2 (10%)</span>
-                <div class="histogram-bar-container">
-                    <div class="histogram-bar" style="width:10%"></div>
-                    <span class="histogram-label">Very good</span>
-                    <div class="histogram-overlay"></div>
-                </div>
-
-                <span class="histogram-freq">1 (5%)</span>
-                <div class="histogram-bar-container">
-                    <div class="histogram-bar" style="width:5%"></div>
-                    <span class="histogram-label">Bad</span>
-                    <div class="histogram-overlay"></div>
-                </div>
-
-                <span class="histogram-freq">0 (0%)</span>
-                <div class="histogram-bar-container">
-                    <div class="histogram-bar" style="width:0%"></div>
-                    <span class="histogram-label">Very bad</span>
-                    <div class="histogram-overlay"></div>
-                </div>
-
-                <span class="histogram-freq">20</span>
+                <span class="histogram-freq">{{total|safe}}</span>
                 <div class="histogram-total">Total</div>
             </div>
 
-            <a class="btn btn-primary" download="results.csv" href="/csv/c/qbH359tf">Download CSV</a>
+            <a class="btn btn-primary" download="results.csv" href="/csv/c/{{poll_id|safe}}">Download CSV</a>
         </form>
     </div>
 </body>

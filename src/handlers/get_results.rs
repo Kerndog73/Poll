@@ -4,7 +4,7 @@ use deadpool_postgres::Pool;
 
 struct AggOption {
     name: String,
-    frequency: usize,
+    count: usize,
     percent: f64,
 }
 
@@ -29,13 +29,15 @@ pub async fn get_results_cat(poll_id: db::PollID, session_id: db::SessionID, poo
     }
 
     let results = try_500!(db::get_aggregate_results_cat(pool, &poll_id).await);
-    let options = poll.options.iter().enumerate()
+    let total = results.total as f64;
+    let mut options = poll.options.iter().enumerate()
         .map(|(i, name)| AggOption {
             name: name.clone(),
-            frequency: results.histogram[i],
-            percent: results.histogram[i] as f64 / results.total as f64,
+            count: results.histogram[i],
+            percent: ((results.histogram[i] * 1000) as f64 / total).round() / 10.0,
         })
-        .collect();
+        .collect::<Vec<_>>();
+    options.sort_by_key(|option| std::cmp::Reverse(option.count));
 
     Ok(Box::new(TemplateCat {
         poll_id,
