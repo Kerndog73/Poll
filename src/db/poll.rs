@@ -7,9 +7,8 @@ pub type PollID = String;
 
 pub const TITLE_LENGTH: usize = 128;
 
-// TODO: Don't forget to set this back to 1 day
 macro_rules! poll_duration {
-    () => { "INTERVAL '10 day'" }
+    () => { "INTERVAL '1 day'" }
 }
 
 pub const POLL_DURATION: std::time::Duration = std::time::Duration::from_secs(24 * 60 * 60);

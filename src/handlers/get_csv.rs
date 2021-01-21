@@ -22,26 +22,26 @@ pub async fn get_csv_cat(poll_id: db::PollID, session_id: db::SessionID, pool: P
     if poll.owner != session_id {
         return Ok(Box::new(warp::http::StatusCode::NOT_FOUND));
     }
-    let results = try_500!(db::get_poll_results_cat(pool, &poll_id).await);
 
     let mut writer = csv::WriterBuilder::new().flexible(true).from_writer(vec![]);
 
     writer.write_record(&[poll.title]).unwrap();
 
     if poll.mutex {
-        // TODO: This probably makes more sense as a histogram.
-        writer.write_record(&["Response", "Key"]).unwrap();
-        let len = results.len().max(poll.options.len());
-        for i in 0..len {
-            if i >= results.len() {
-                writer.serialize(("", &poll.options[i])).unwrap();
-            } else if i >= poll.options.len() {
-                writer.serialize((results[i].trailing_zeros(),)).unwrap();
-            } else {
-                writer.serialize((results[i].trailing_zeros(), &poll.options[i])).unwrap();
-            }
+        let results = try_500!(db::get_aggregate_results_cat(pool, &poll_id).await);
+        let mut options = results.histogram.iter()
+            .take(poll.options.len())
+            .enumerate()
+            .collect::<Vec<_>>();
+        options.sort_by_key(|option| std::cmp::Reverse(option.1));
+
+        for option in options {
+            writer.serialize((&poll.options[option.0], option.1)).unwrap();
         }
+        writer.serialize(("total", results.total)).unwrap();
     } else {
+        let results = try_500!(db::get_poll_results_cat(pool, &poll_id).await);
+
         writer.write_record(&poll.options).unwrap();
         for response in results.iter() {
             for i in 0..poll.options.len() {
