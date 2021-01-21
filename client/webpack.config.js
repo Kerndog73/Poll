@@ -7,7 +7,9 @@ const CssoWebpackPlugin = require("csso-webpack-plugin").default;
 const HtmlWebpackSkipAssetsPlugin = require("html-webpack-skip-assets-plugin").HtmlWebpackSkipAssetsPlugin;
 
 const TEMPLATE_PARAMS = {
-    description: "Create a simple one-question poll in seconds with no signup required"
+    description: "Create a simple one-question poll in seconds with no signup required",
+    max_title_len: 128,
+    max_option_len: 64,
 };
 
 module.exports = {

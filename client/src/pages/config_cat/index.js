@@ -50,7 +50,7 @@ function optionBlur(e) {
 }
 
 function optionFocus(e) {
-    e.target.parentElement.scrollIntoView({block: "nearest"});
+    e.target.parentElement.scrollIntoView({ block: "nearest" });
 }
 
 firstOption.oninput = optionInput;
