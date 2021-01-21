@@ -2,6 +2,7 @@
 
 html, body {
   height: 100%;
+  overflow-wrap: break-word;
 }
 
 form {
@@ -38,10 +39,6 @@ form {
   position: absolute;
   image-rendering: pixelated;
   width: 100%;
-}
-
-.run-title {
-  overflow-wrap: break-word;
 }
 
 .run-link {
@@ -114,7 +111,6 @@ form {
 }
 
 .histogram-label {
-  word-break: break-word;
   margin: auto 6px;
   color: white;
   mix-blend-mode: difference;
