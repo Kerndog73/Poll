@@ -17,3 +17,7 @@ pub fn maybe_set_session_cookie<R: 'static + warp::Reply>(reply: R, session_id: 
         Box::new(reply)
     }
 }
+
+pub fn is_integer(n: f64) -> bool {
+    n == n.trunc()
+}

@@ -97,6 +97,11 @@ CREATE TABLE IF NOT EXISTS poll_numerical_response (
         ON DELETE CASCADE
 );
 
+CREATE OR REPLACE FUNCTION purge_polls() RETURNS VOID AS $$
+    DELETE FROM poll
+    WHERE creation_time <= NOW() - INTERVAL '1 day'
+$$ LANGUAGE SQL;
+
 CREATE OR REPLACE FUNCTION purge_sessions() RETURNS VOID AS $$
     DELETE FROM session
     WHERE NOT EXISTS(

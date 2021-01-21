@@ -1,5 +1,5 @@
 use deadpool_postgres::{Pool, PoolError};
-use super::{SessionID, PollID, POLL_ID_LENGTH, TITLE_LENGTH};
+use super::{SessionID, PollID, POLL_ID_LENGTH};
 
 pub struct PollNum {
     pub owner: SessionID,
@@ -9,29 +9,8 @@ pub struct PollNum {
     pub integer: bool,
 }
 
-fn is_integer(n: f64) -> bool {
-    n == n.trunc()
-}
-
-pub fn valid_poll_num(poll: &PollNum) -> bool {
-    if poll.title.len() == 0 || poll.title.len() > TITLE_LENGTH { return false; }
-    if poll.minimum >= poll.maximum { return false; }
-    if poll.integer {
-        if poll.minimum != -f64::INFINITY && !is_integer(poll.minimum) { return false; }
-        if poll.maximum != f64::INFINITY && !is_integer(poll.maximum) { return false; }
-    }
-    true
-}
-
 #[derive(Clone, Copy)]
 pub struct ResponseNum(pub f64);
-
-pub fn valid_response_num(poll: &PollNum, response: ResponseNum) -> bool {
-    if response.0 < poll.minimum { return false; }
-    if response.0 > poll.maximum { return false; }
-    if poll.integer && !is_integer(response.0) { return false; }
-    true
-}
 
 pub async fn create_poll_num(pool: Pool, poll: PollNum) -> Result<PollID, PoolError> {
     let conn = pool.get().await?;

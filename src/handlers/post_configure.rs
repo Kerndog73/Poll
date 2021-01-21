@@ -68,6 +68,8 @@ fn parse_or(string: String, default: f64) -> Result<f64, std::num::ParseFloatErr
 }
 
 fn parse_poll_num(session_id: db::SessionID, req: ConfigureNumRequest) -> Option<db::PollNum> {
+    if req.title.len() == 0 || req.title.len() > db::TITLE_LENGTH { return None; }
+
     let minimum = match parse_or(req.minimum, -f64::INFINITY) {
         Ok(n) => n,
         Err(_) => return None
@@ -78,19 +80,21 @@ fn parse_poll_num(session_id: db::SessionID, req: ConfigureNumRequest) -> Option
         Err(_) => return None
     };
 
-    let poll = db::PollNum {
+    let integer = req.integer.is_some();
+
+    if minimum >= maximum { return None; }
+    if integer {
+        if minimum != -f64::INFINITY && !utils::is_integer(minimum) { return None; }
+        if maximum != f64::INFINITY && !utils::is_integer(maximum) { return None; }
+    }
+
+    Some(db::PollNum {
         owner: session_id,
         title: req.title,
         minimum,
         maximum,
-        integer: req.integer.is_some(),
-    };
-
-    if !db::valid_poll_num(&poll) {
-        return None;
-    }
-
-    Some(poll)
+        integer,
+    })
 }
 
 pub async fn post_configure_num(mut session_id: db::SessionID, req: ConfigureNumRequest, pool: Pool)

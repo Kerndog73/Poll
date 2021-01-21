@@ -11,7 +11,7 @@ struct StatusTemplate {
 
 pub type RespondCatRequest = Vec<(String, u32)>;
 
-fn parse_response(poll: db::PollCat, req: RespondCatRequest) -> Option<db::ResponseCat> {
+fn parse_response_cat(poll: db::PollCat, req: RespondCatRequest) -> Option<db::ResponseCat> {
     if poll.mutex {
         if req.len() != 1 { return None; }
     } else {
@@ -38,7 +38,7 @@ pub async fn post_respond_cat(
         None => return Ok(Box::new(warp::http::StatusCode::NOT_FOUND))
     };
 
-    let response = match parse_response(poll, req) {
+    let response = match parse_response_cat(poll, req) {
         Some(response) => response,
         None => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
     };
@@ -62,6 +62,13 @@ pub struct RespondNumRequest {
     response: f64,
 }
 
+fn parse_response_num(poll: db::PollNum, req: RespondNumRequest) -> Option<db::ResponseNum> {
+    if req.response < poll.minimum { return None; }
+    if req.response > poll.maximum { return None; }
+    if poll.integer && !utils::is_integer(req.response) { return None; }
+    Some(db::ResponseNum(req.response))
+}
+
 pub async fn post_respond_num(
     poll_id: db::PollID,
     mut session_id: db::SessionID,
@@ -74,11 +81,10 @@ pub async fn post_respond_num(
         None => return Ok(Box::new(warp::http::StatusCode::NOT_FOUND))
     };
 
-    let response = db::ResponseNum(req.response);
-
-    if !db::valid_response_num(&poll, response) {
-        return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST));
-    }
+    let response = match parse_response_num(poll, req) {
+        Some(response) => response,
+        None => return Ok(Box::new(warp::http::StatusCode::BAD_REQUEST))
+    };
 
     let set_cookie = try_500!(utils::create_session_if_invalid(pool.clone(), &mut session_id).await);
 
