@@ -87,7 +87,7 @@ module.exports = {
             templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackSkipAssetsPlugin({
-            skipAssets: ["common.js"]
+            skipAssets: ["/js/common.js"]
         }),
     ],
     module: {
