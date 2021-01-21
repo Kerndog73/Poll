@@ -4,19 +4,19 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const PurgecssPlugin = require("purgecss-webpack-plugin");
 const CssoWebpackPlugin = require("csso-webpack-plugin").default;
+const HtmlWebpackSkipAssetsPlugin = require("html-webpack-skip-assets-plugin").HtmlWebpackSkipAssetsPlugin;
+
+const TEMPLATE_PARAMS = {
+    description: "Create a simple one-question poll in seconds with no signup required"
+};
 
 module.exports = {
     entry: {
         common: "./src/pages/common/index.js",
-        home: "./src/pages/home/index.js",
         config_cat: "./src/pages/config_cat/index.js",
         config_num: "./src/pages/config_num/index.js",
         run: "./src/pages/run/index.js",
-        results_cat: "./src/pages/results_cat/index.js",
-        results_num: "./src/pages/results_num/index.js",
-        respond_cat: "./src/pages/respond_cat/index.js",
         respond_num: "./src/pages/respond_num/index.js",
-        status: "./src/pages/status/index.js",
     },
     output: {
         filename: "js/[name].js",
@@ -35,47 +35,59 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: "home.html",
             template: "./public/home.html",
-            chunks: ["common", "home"]
+            chunks: ["common"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "config_cat.html",
             template: "./public/config_cat.html",
-            chunks: ["common", "config_cat"]
+            chunks: ["common", "config_cat"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "config_num.html",
             template: "./public/config_num.html",
             chunks: ["common", "config_num"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "run.html",
             template: "./public/run.html",
-            chunks: ["common", "run"]
+            chunks: ["common", "run"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "results_cat.html",
             template: "./public/results_cat.html",
-            chunks: ["common", "results_cat"]
+            chunks: ["common"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "results_num.html",
             template: "./public/results_num.html",
-            chunks: ["common", "results_num"]
+            chunks: ["common"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "respond_cat.html",
             template: "./public/respond_cat.html",
-            chunks: ["common", "respond_cat"]
+            chunks: ["common"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "respond_num.html",
             template: "./public/respond_num.html",
-            chunks: ["common", "respond_num"]
+            chunks: ["common", "respond_num"],
+            templateParameters: TEMPLATE_PARAMS,
         }),
         new HtmlWebpackPlugin({
             filename: "status.html",
             template: "./public/status.html",
-            chunks: ["common"]
+            chunks: ["common"],
+            templateParameters: TEMPLATE_PARAMS,
+        }),
+        new HtmlWebpackSkipAssetsPlugin({
+            skipAssets: ["common.js"]
         }),
     ],
     module: {
