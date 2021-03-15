@@ -183,8 +183,8 @@ which is a reasonable limit
 
 For simplicity, the same data format could be used in mutually exclusive choice
 mode but this could make some operations less efficient than they might be if
-they indexes were used. The CSV representation must also be considered. Using
-the same CSV representation for both may be inconvenient.
+indices were used. The CSV representation must also be considered. Using the
+same CSV representation for both may be inconvenient.
 
 The client-side JavaScript must be responsible for converting the form data to
 this compact representation and submitting it to the server.
